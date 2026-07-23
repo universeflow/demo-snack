@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Grid3x3, X, Pause, Play } from 'lucide-react';
 import { clients, GRID_COLS } from './data';
-import Capsule from './Capsule';
-import Numpad from './Numpad';
+import Capsule from './capsule';
+import Numpad from './numpad';
 
 const AUTOPLAY_MS = 5000;
 
