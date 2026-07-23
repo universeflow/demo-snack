@@ -109,7 +109,7 @@ export function HeroSection() {
                   src="/images/demo.png"
                   alt="Máquina SNACK Pro"
                   fill
-                  className="object-contain"
+                  className="scale-down"
                   priority
                 />
               </div>
@@ -118,9 +118,7 @@ export function HeroSection() {
               <div className="text-center space-y-4">
                 <h2 className="text-5xl md:text-6xl font-black text-[#121212]">MÁQUINA</h2>
                 <h2 className="text-5xl md:text-6xl font-black text-[#121212]">SNACK</h2>
-                <p className="text-base md:text-lg text-[#121212]/70 max-w-sm mx-auto">
-                  Llevamos las mejores máquinas dispensadoras a tu empresa o establecimiento.
-                </p>
+
               </div>
             </motion.div>
           </div>
