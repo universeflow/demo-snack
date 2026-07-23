@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Grid3x3, X, Pause, Play } from 'lucide-react';
 import { clients, GRID_COLS } from './data';
