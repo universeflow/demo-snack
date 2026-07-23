@@ -62,8 +62,7 @@ export function HeroSection() {
       ref={ref}
       className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-white noise-overlay"
     >
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-[#AFFF00]/5 to-white" />
+
 
       <motion.div
         className="absolute top-20 left-10 w-24 h-24 rounded-full bg-[#AFFF00]/20 blur-3xl"
@@ -169,7 +168,7 @@ export function HeroSection() {
               {["MÁQUINA SNACK", "MÁQUINA CAFÉ"].map((benefit, i) => (
                 <motion.div
                   key={benefit}
-                  className="flex items-center gap-2 text-lg font-bold font-sans text-[#121212]"
+                  className={`flex items-center gap-2 text-lg font-bold font-sans ${i === 0 ? "text-[#050505]" : "text-[#121212]"}`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8 + i * 0.1 }}
