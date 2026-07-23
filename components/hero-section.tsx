@@ -100,7 +100,7 @@ export function HeroSection() {
                   custom={1}
                   className="inline-block"
                 >
-                  ELIGE,
+                  ELIGE
                 </motion.span>
               </motion.h1>
               <motion.h1
@@ -114,7 +114,7 @@ export function HeroSection() {
                   custom={1.5}
                   className="inline-block"
                 >
-                  PRESIONA,
+                  PRESIONA
                 </motion.span>
               </motion.h1>
               <motion.h1
@@ -166,7 +166,7 @@ export function HeroSection() {
               custom={5}
               className="flex flex-wrap gap-4 pt-2"
             >
-              {["Máquina Snack", "Máquina Café SNACK"].map((benefit, i) => (
+              {["Máquina Snack", "Máquina Café"].map((benefit, i) => (
                 <motion.div
                   key={benefit}
                   className="flex items-center gap-2 text-xs font-mono text-[#121212]"
