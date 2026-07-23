@@ -203,7 +203,7 @@ export function HeroSection() {
                 }}
               >
                 <Image
-                  src="/images/demo.png"
+                  src="/images/stiker.webp"
                   alt="GiGi Energy Drink - Lemon Lime Flavour"
                   width={350}
                   height={525}
