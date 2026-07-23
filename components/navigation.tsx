@@ -78,7 +78,7 @@ export function Navigation() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
           <motion.span
             className="text-2xl font-black tracking-tighter"
             whileHover={{ scale: 1.05 }}
@@ -99,12 +99,12 @@ export function Navigation() {
           </motion.span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
           {navLinks.map((item, i) => (
             <motion.button
               key={item.label}
               onClick={() => scrollToSection(item.href)}
-              className={`text-sm font-medium tracking-wide transition-colors relative ${
+              className={`text-sm font-medium tracking-wide transition-colors relative whitespace-nowrap ${
                 scrolled ? "text-white/80 hover:text-[#AFFF00]" : "text-[#121212]/80 hover:text-[#121212]"
               }`}
               initial={{ opacity: 0, y: -10 }}
@@ -124,7 +124,7 @@ export function Navigation() {
           ))}
         </div>
 
-
+        <div className="flex-shrink-0" />
 
         <motion.button
           className="md:hidden p-2"
