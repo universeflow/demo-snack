@@ -100,7 +100,21 @@ export function HeroSection() {
                   custom={1}
                   className="inline-block"
                 >
-                  FUEL YOUR
+                  ELIGE,
+                </motion.span>
+              </motion.h1>
+              <motion.h1
+                style={{ x: textX1 }}
+                className="text-5xl md:text-7xl font-black tracking-tighter text-[#121212] leading-[0.9]"
+              >
+                <motion.span
+                  variants={fadeUpVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={1.5}
+                  className="inline-block"
+                >
+                  PRESIONA,
                 </motion.span>
               </motion.h1>
               <motion.h1
@@ -112,9 +126,9 @@ export function HeroSection() {
                   initial="hidden"
                   animate="visible"
                   custom={2}
-                  className="inline-block text-[#AFFF00]"
+                  className="inline-block text-red-500"
                 >
-                  AMBITION
+                  DISFRUTA
                 </motion.span>
               </motion.h1>
               <motion.p
@@ -124,7 +138,7 @@ export function HeroSection() {
                 custom={3}
                 className="text-lg md:text-xl font-mono text-[#121212]/60 tracking-tight pt-2 max-w-md"
               >
-                Zero sugar. Natural flavors. Clean energy that hits different.
+                Llevamos las mejores máquinas dispensadoras a tu empresa o establecimiento.
               </motion.p>
             </div>
 
@@ -141,7 +155,7 @@ export function HeroSection() {
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                Explore Flavours
+                Nuestros Servicios
               </motion.button>
             </motion.div>
 
@@ -152,15 +166,15 @@ export function HeroSection() {
               custom={5}
               className="flex flex-wrap gap-4 pt-2"
             >
-              {["Zero Sugar", "75mg Caffeine", "Natural Flavours", "Vitamin B Rich"].map((benefit, i) => (
+              {["Máquina Snack", "Máquina Café SNACK"].map((benefit, i) => (
                 <motion.div
                   key={benefit}
-                  className="flex items-center gap-2 text-xs font-mono text-[#121212]/60"
+                  className="flex items-center gap-2 text-xs font-mono text-[#121212]"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8 + i * 0.1 }}
                 >
-                  <div className="w-1.5 h-1.5 bg-[#AFFF00] rounded-full" />
+                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
                   {benefit}
                 </motion.div>
               ))}
