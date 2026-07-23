@@ -166,10 +166,10 @@ export function HeroSection() {
               custom={5}
               className="flex flex-wrap gap-4 pt-2"
             >
-              {["Máquina Snack", "Máquina Café"].map((benefit, i) => (
+              {["MÁQUINA SNACK", "Máquina Café"].map((benefit, i) => (
                 <motion.div
                   key={benefit}
-                  className="flex items-center gap-2 text-xs font-mono text-[#121212]"
+                  className="flex items-center gap-2 text-lg font-bold font-sans text-[#121212]"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8 + i * 0.1 }}
