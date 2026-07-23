@@ -19,19 +19,21 @@ const fadeUpVariants = {
 export function HeroSection() {
   return (
     <section id="hero" className="relative w-full min-h-screen bg-white overflow-hidden">
-      {/* Left Background Pattern */}
-      <div className="absolute left-0 top-0 w-1/2 h-full opacity-40">
+      {/* Left Background Pattern - Bottom Left Corner */}
+      <div className="absolute bottom-0 left-0 w-80 h-80 opacity-50 -rotate-12">
         <Image src="/images/izquierda.png" alt="Left pattern" fill className="object-cover" priority />
       </div>
 
-      {/* Right Background Pattern */}
-      <div className="absolute right-0 top-0 w-1/2 h-full opacity-40">
+      {/* Right Background Pattern - Top Right Corner */}
+      <div className="absolute top-0 right-0 w-80 h-80 opacity-50 rotate-12">
         <Image src="/images/derecha.png" alt="Right pattern" fill className="object-cover" priority />
       </div>
 
-      {/* Red Wavy Line */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-1/3 pointer-events-none">
-        <Image src="/images/lineaRoja.png" alt="Red line" fill className="object-contain" priority />
+      {/* Red Wavy Line - Diagonal Division */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute w-full h-2/3 top-1/2 -translate-y-1/2">
+          <Image src="/images/lineaRoja.png" alt="Red line" fill className="object-contain object-center" priority />
+        </div>
       </div>
 
       {/* Main Content Container */}
