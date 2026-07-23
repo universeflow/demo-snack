@@ -124,30 +124,7 @@ export function Navigation() {
           ))}
         </div>
 
-        <motion.button
-          className="hidden md:block bg-[#AFFF00] text-[#121212] px-6 py-2.5 rounded-full font-bold text-sm tracking-wide relative overflow-hidden"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-        >
-          <motion.div
-            className="absolute inset-0 bg-white/30"
-            animate={{
-              boxShadow: [
-                "0 0 20px rgba(175,255,0,0.3)",
-                "0 0 40px rgba(175,255,0,0.6)",
-                "0 0 20px rgba(175,255,0,0.3)",
-              ],
-            }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"
-            animate={{ x: ["-100%", "200%"] }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, repeatDelay: 3 }}
-          />
-          <span className="relative z-10">Get 25% Off</span>
-        </motion.button>
+
 
         <motion.button
           className="md:hidden p-2"
@@ -202,14 +179,6 @@ export function Navigation() {
                   {item.label}
                 </motion.button>
               ))}
-              <motion.button
-                className="w-full bg-[#AFFF00] text-[#121212] px-6 py-3 rounded-full font-bold text-sm tracking-wide mt-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                Get 25% Off
-              </motion.button>
             </div>
           </motion.div>
         )}
