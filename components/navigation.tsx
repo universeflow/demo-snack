@@ -61,11 +61,11 @@ export function Navigation() {
   }
 
   const navLinks = [
-    { label: "Home", href: "#hero" },
-    { label: "Flavours", href: "#flavours" },
-    { label: "Creators", href: "#creators" },
-    { label: "Distributors", href: "#distributors" },
-    { label: "Careers", href: "#careers" },
+    { label: "Inicio", href: "#hero" },
+    { label: "Clientes", href: "#clientes" },
+    { label: "Nosotros", href: "#nosotros" },
+    { label: "Servicios", href: "#servicios" },
+    { label: "Contacto", href: "#contacto" },
   ]
 
   return (
@@ -84,17 +84,17 @@ export function Navigation() {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            <span className={scrolled ? "text-white" : "text-[#121212]"}>Gi</span>
+            <span className="text-red-500">Snack</span>
             <motion.span
-              className="text-[#AFFF00]"
+              className={scrolled ? "text-white" : "text-[#121212]"}
               animate={{
                 textShadow: scrolled
-                  ? ["0 0 10px rgba(175,255,0,0.5)", "0 0 20px rgba(175,255,0,0.8)", "0 0 10px rgba(175,255,0,0.5)"]
+                  ? ["0 0 10px rgba(255,255,255,0.3)", "0 0 20px rgba(255,255,255,0.6)", "0 0 10px rgba(255,255,255,0.3)"]
                   : "none",
               }}
               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
             >
-              Gi
+              Pro
             </motion.span>
           </motion.span>
         </Link>

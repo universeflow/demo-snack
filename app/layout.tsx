@@ -17,9 +17,9 @@ const _jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "GiGi Energy Drink | Dream Big, Drink GiGi",
-  description: "Zero sugar, 75mg caffeine, 100% natural flavors. The energy drink for dreamers and doers.",
-  keywords: ["energy drink", "zero sugar", "natural energy", "GiGi", "caffeine"],
+  title: "Snack Pro | Bebida Energética Premium",
+  description: "Cero azúcar, 75mg cafeína, sabores 100% naturales. La bebida energética para emprendedores y profesionales.",
+  keywords: ["bebida energética", "cero azúcar", "energía natural", "Snack Pro", "cafeína"],
     generator: 'v0.app'
 }
 

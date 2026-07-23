@@ -88,21 +88,6 @@ export function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           {/* Text Content */}
           <motion.div style={{ opacity }} className="space-y-5">
-            <motion.div
-              variants={fadeUpVariants}
-              initial="hidden"
-              animate="visible"
-              custom={0}
-              className="inline-flex items-center gap-2 bg-[#121212] text-white px-3 py-1.5 rounded-full text-xs font-mono tracking-wider"
-            >
-              <motion.span
-                className="w-2 h-2 bg-[#AFFF00] rounded-full"
-                animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
-                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-              />
-              BETTER-FOR-YOU ENERGY DRINK
-            </motion.div>
-
             <div className="space-y-1 overflow-hidden">
               <motion.h1
                 style={{ x: textX1 }}
