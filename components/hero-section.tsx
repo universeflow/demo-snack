@@ -1,10 +1,7 @@
 "use client"
 
-import { motion, useScroll, useTransform, useSpring } from "framer-motion"
-import { useRef } from "react"
+import { motion } from "framer-motion"
 import Image from "next/image"
-
-const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -19,221 +16,128 @@ const fadeUpVariants = {
   }),
 }
 
-const scaleInVariants = {
-  hidden: { opacity: 0, scale: 0.8, rotate: -10 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    rotate: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 20,
-      delay: 0.3,
-    },
-  },
-}
-
 export function HeroSection() {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  })
-
-  const rawY = useTransform(scrollYProgress, [0, 1], [0, 200])
-  const y = useSpring(rawY, springConfig)
-
-  const rawTextX1 = useTransform(scrollYProgress, [0, 1], [0, -100])
-  const textX1 = useSpring(rawTextX1, springConfig)
-
-  const rawTextX2 = useTransform(scrollYProgress, [0, 1], [0, 100])
-  const textX2 = useSpring(rawTextX2, springConfig)
-
-  const rawScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9])
-  const scale = useSpring(rawScale, springConfig)
-
-  const rawOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
-  const opacity = useSpring(rawOpacity, springConfig)
-
   return (
-    <section
-      id="hero"
-      ref={ref}
-      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-white noise-overlay"
-    >
+    <section id="hero" className="relative w-full min-h-screen bg-white overflow-hidden">
+      {/* Left Background Pattern */}
+      <div className="absolute left-0 top-0 w-1/2 h-full opacity-40">
+        <Image src="/images/izquierda.png" alt="Left pattern" fill className="object-cover" priority />
+      </div>
 
+      {/* Right Background Pattern */}
+      <div className="absolute right-0 top-0 w-1/2 h-full opacity-40">
+        <Image src="/images/derecha.png" alt="Right pattern" fill className="object-cover" priority />
+      </div>
 
-      <motion.div
-        className="absolute top-20 left-10 w-24 h-24 rounded-full bg-[#AFFF00]/20 blur-3xl"
-        animate={{
-          x: [0, 30, 0],
-          y: [0, -20, 0],
-          scale: [1, 1.1, 1],
-        }}
-        transition={{ duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-40 right-20 w-32 h-32 rounded-full bg-[#AFFF00]/10 blur-3xl"
-        animate={{
-          x: [0, -40, 0],
-          y: [0, 30, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-      />
+      {/* Red Wavy Line */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-1/3 pointer-events-none">
+        <Image src="/images/lineaRoja.png" alt="Red line" fill className="object-contain" priority />
+      </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
-          {/* Text Content */}
-          <motion.div style={{ opacity }} className="space-y-5">
-            <div className="space-y-1 overflow-hidden">
-              <motion.h1
-                style={{ x: textX1 }}
-                className="text-5xl md:text-7xl font-black tracking-tighter text-[#121212] leading-[0.9]"
-              >
-                <motion.span
+      {/* Main Content Container */}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="w-full max-w-7xl mx-auto px-6 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Text Content */}
+            <motion.div className="space-y-8">
+              {/* Main Title */}
+              <div className="space-y-2">
+                <motion.h1
+                  variants={fadeUpVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={0}
+                  className="text-6xl md:text-8xl font-black text-[#121212] leading-[0.9]"
+                >
+                  ELIGE
+                </motion.h1>
+                <motion.h1
+                  variants={fadeUpVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={0.5}
+                  className="text-6xl md:text-8xl font-black text-[#121212] leading-[0.9]"
+                >
+                  PRESIONA
+                </motion.h1>
+                <motion.h1
                   variants={fadeUpVariants}
                   initial="hidden"
                   animate="visible"
                   custom={1}
-                  className="inline-block"
-                >
-                  ELIGE
-                </motion.span>
-              </motion.h1>
-              <motion.h1
-                style={{ x: textX1 }}
-                className="text-5xl md:text-7xl font-black tracking-tighter text-[#121212] leading-[0.9]"
-              >
-                <motion.span
-                  variants={fadeUpVariants}
-                  initial="hidden"
-                  animate="visible"
-                  custom={1.5}
-                  className="inline-block"
-                >
-                  PRESIONA
-                </motion.span>
-              </motion.h1>
-              <motion.h1
-                style={{ x: textX2 }}
-                className="text-5xl md:text-7xl font-black tracking-tighter text-[#121212] leading-[0.9]"
-              >
-                <motion.span
-                  variants={fadeUpVariants}
-                  initial="hidden"
-                  animate="visible"
-                  custom={2}
-                  className="inline-block text-red-500"
+                  className="text-6xl md:text-8xl font-black text-red-600 leading-[0.9]"
                 >
                   DISFRUTA
-                </motion.span>
-              </motion.h1>
+                </motion.h1>
+              </div>
+
+              {/* Statistics Section */}
+              <motion.div
+                variants={fadeUpVariants}
+                initial="hidden"
+                animate="visible"
+                custom={1.5}
+                className="space-y-2"
+              >
+                <div className="text-5xl md:text-6xl font-black text-[#121212]">2,023+</div>
+                <div className="text-lg md:text-xl font-bold text-[#121212]">CLIENTES SATISFECHOS</div>
+                <div className="text-base md:text-lg font-bold text-red-600">UNIDAD DE MÁQUINAS SNACK</div>
+              </motion.div>
+
+              {/* Description */}
               <motion.p
                 variants={fadeUpVariants}
                 initial="hidden"
                 animate="visible"
-                custom={3}
-                className="text-lg md:text-xl font-mono text-[#121212]/60 tracking-tight pt-2 max-w-md"
+                custom={2}
+                className="text-base md:text-lg text-[#121212]/70 max-w-sm"
               >
                 Llevamos las mejores máquinas dispensadoras a tu empresa o establecimiento.
               </motion.p>
-            </div>
 
-            <motion.div
-              variants={fadeUpVariants}
-              initial="hidden"
-              animate="visible"
-              custom={4}
-              className="flex flex-wrap gap-3 pt-2"
-            >
-              <motion.button
-                className="border-2 border-[#121212] text-[#121212] px-6 py-3 rounded-full font-bold text-sm tracking-wide relative overflow-hidden"
-                whileHover={{ scale: 1.02, backgroundColor: "#121212", color: "#fff" }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                Nuestros Servicios
-              </motion.button>
-            </motion.div>
-
-            <motion.div
-              variants={fadeUpVariants}
-              initial="hidden"
-              animate="visible"
-              custom={5}
-              className="flex flex-wrap gap-4 pt-2"
-            >
-              {["MÁQUINA SNACK", "MÁQUINA CAFÉ"].map((benefit, i) => (
-                <motion.div
-                  key={benefit}
-                  className={`flex items-center gap-2 text-lg font-bold font-sans ${i === 0 ? "text-[#050505]" : "text-[#121212]"}`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8 + i * 0.1 }}
-                >
-                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
-                  {benefit}
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          <motion.div style={{ y, scale }} className="relative flex justify-center">
-            <motion.div variants={scaleInVariants} initial="hidden" animate="visible" className="relative">
+              {/* Snack Icon (Placeholder) */}
               <motion.div
-                className="absolute inset-0 bg-[#84cc16]/30 blur-[80px] rounded-full scale-75"
-                animate={{
-                  scale: [0.75, 0.85, 0.75],
-                  opacity: [0.3, 0.5, 0.3],
-                }}
-                transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-              />
-
-              <motion.div
-                animate={{
-                  y: [0, -15, 0],
-                  rotate: [0, 2, 0],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
-                }}
+                variants={fadeUpVariants}
+                initial="hidden"
+                animate="visible"
+                custom={2.5}
               >
-                <Image
-                  src="/images/stiker.webp"
-                  alt="GiGi Energy Drink - Lemon Lime Flavour"
-                  width={350}
-                  height={525}
-                  className="relative z-10 drop-shadow-2xl"
-                  priority
-                />
+                <div className="w-24 h-24 bg-[#FF3B3B] rounded-2xl flex items-center justify-center">
+                  <span className="text-4xl">🍿</span>
+                </div>
               </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
 
-        <motion.div
-          className="absolute bottom-6 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.8 }}
-        >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-          >
-            <div className="w-5 h-8 border-2 border-[#121212]/30 rounded-full flex justify-center pt-1.5">
-              <motion.div
-                className="w-1 h-2 bg-[#121212]/30 rounded-full"
-                animate={{ y: [0, 6, 0], opacity: [1, 0.5, 1] }}
-                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-              />
-            </div>
-          </motion.div>
-        </motion.div>
+            {/* Right Column - Image Content */}
+            <motion.div
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate="visible"
+              custom={3}
+              className="flex flex-col items-center space-y-8"
+            >
+              {/* Machine Image */}
+              <div className="relative w-full h-96 flex justify-center">
+                <Image
+                  src="/images/demo.png"
+                  alt="Máquina SNACK Pro"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+
+              {/* Machine Description */}
+              <div className="text-center space-y-4">
+                <h2 className="text-5xl md:text-6xl font-black text-[#121212]">MÁQUINA</h2>
+                <h2 className="text-5xl md:text-6xl font-black text-[#121212]">SNACK</h2>
+                <p className="text-base md:text-lg text-[#121212]/70 max-w-sm mx-auto">
+                  Llevamos las mejores máquinas dispensadoras a tu empresa o establecimiento.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   )
