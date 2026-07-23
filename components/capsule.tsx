@@ -1,3 +1,5 @@
+"use client"
+
 import { Client } from './data';
 
 interface CapsuleProps {
