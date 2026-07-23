@@ -29,12 +29,7 @@ export function HeroSection() {
         <Image src="/images/derecha.png" alt="Right pattern" fill className="object-cover" priority />
       </div>
 
-      {/* Red Wavy Line - Diagonal Division */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="absolute w-full h-2/3 top-1/2 -translate-y-1/2">
-          <Image src="/images/lineaRoja.png" alt="Red line" fill className="object-contain object-center" priority />
-        </div>
-      </div>
+
 
       {/* Main Content Container */}
       <div className="relative z-10 h-full flex items-center">
@@ -97,17 +92,7 @@ export function HeroSection() {
                 Llevamos las mejores máquinas dispensadoras a tu empresa o establecimiento.
               </motion.p>
 
-              {/* Snack Icon (Placeholder) */}
-              <motion.div
-                variants={fadeUpVariants}
-                initial="hidden"
-                animate="visible"
-                custom={2.5}
-              >
-                <div className="w-24 h-24 bg-[#FF3B3B] rounded-2xl flex items-center justify-center">
-                  <span className="text-4xl">🍿</span>
-                </div>
-              </motion.div>
+
             </motion.div>
 
             {/* Right Column - Image Content */}
