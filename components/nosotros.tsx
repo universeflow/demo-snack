@@ -57,19 +57,19 @@ export function Nosotros() {
   ]
 
   return (
-    <section className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center px-4">
+    <section className="relative w-full min-h-screen bg-black overflow-hidden flex items-center justify-center px-2 sm:px-4 py-8 md:py-0">
       <div
         style={{
           position: 'relative',
           width: '100%',
           maxWidth: 1200,
-          minHeight: 480,
+          minHeight: 'auto',
           background: 'linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)',
           overflow: 'hidden',
           fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
-          borderRadius: 12,
+          borderRadius: 8,
           boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
-          padding: '40px 0',
+          padding: '20px 0 sm:30px md:40px 0',
         }}
       >
         {/* Geometric SVG background - Exact from hero */}
@@ -92,24 +92,24 @@ export function Nosotros() {
         </svg>
 
         {/* Content */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ padding: '40px 56px' }}>
+        <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ padding: '16px 20px sm:24px md:40px md:56px' }}>
         <div className="w-full">
           {/* Header */}
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-8 sm:mb-12 md:mb-16"
             initial={{ opacity: 0, y: -40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-black text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4">
               NOSOTROS
             </h2>
-            <div className="w-20 h-1 bg-red-500 mx-auto rounded-full" />
+            <div className="w-16 sm:w-20 h-1 bg-red-500 mx-auto rounded-full" />
           </motion.div>
 
           {/* Three Sections Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {sections.map((section, index) => (
               <motion.div
                 key={section.title}

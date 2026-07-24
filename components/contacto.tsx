@@ -58,13 +58,13 @@ export function Contacto() {
           position: 'relative',
           width: '100%',
           maxWidth: 1200,
-          minHeight: 480,
+          minHeight: 'auto',
           background: 'linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)',
           overflow: 'hidden',
           fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
-          borderRadius: 12,
+          borderRadius: 8,
           boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
-          padding: '40px 0',
+          padding: '20px 0 sm:30px md:40px 0',
         }}
       >
         {/* Geometric SVG background */}
@@ -87,25 +87,25 @@ export function Contacto() {
         </svg>
 
         {/* Content */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ padding: '40px 56px' }}>
+        <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ padding: '16px 20px sm:24px md:40px md:56px' }}>
           <div className="w-full">
             {/* Title */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-12"
+              className="text-center mb-8 sm:mb-10 md:mb-12"
             >
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3 md:mb-4">
                 Ponte en <span style={{ color: '#E51B24' }}>Contacto</span>
               </h2>
-              <p className="text-gray-400 text-lg">Nos encantaría escucharte. Completa el formulario y nos comunicaremos pronto.</p>
+              <p className="text-gray-400 text-xs sm:text-sm md:text-base lg:text-lg">Nos encantaría escucharte. Completa el formulario y nos comunicaremos pronto.</p>
             </motion.div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-2 sm:px-4">
               {/* Two columns for name and email */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                 {/* Nombre Completo */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
