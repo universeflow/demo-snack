@@ -387,7 +387,7 @@ export default function NuestrosClientes() {
               className="mt-4 w-full max-w-[140px] rounded-lg p-2"
               style={{
                 background: 'linear-gradient(180deg, #1a1a1a, #0d0d0d)',
-                border: '1px solid rgba(255,255,255,0.06)',
+                border: '1px solid #E51B24',
                 boxShadow: 'inset 0 3px 8px rgba(0,0,0,0.9)',
               }}
             >
@@ -423,11 +423,12 @@ export default function NuestrosClientes() {
         >
           <div
             className="relative w-full max-w-2xl rounded-2xl p-6"
-            style={{
-              background: 'linear-gradient(145deg, #1e1e1e, #141414)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 40px 120px rgba(0,0,0,0.9)',
-            }}
+                  style={{
+                    background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
+                    border: '1px solid #E51B24',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08)',
+                    color: 'rgba(255,255,255,0.9)',
+                  }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">

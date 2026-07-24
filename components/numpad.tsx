@@ -57,13 +57,13 @@ export default function Numpad({ activeIndex, total, onSelect }: NumpadProps) {
         SELECCIÓN
       </div>
 
-      {/* LCD display */}
+      {/* LCD display - LED effect */}
       <div
         className="rounded-lg px-2 py-1.5 text-center font-mono"
         style={{
-          background: 'rgba(0,20,0,0.7)',
-          border: '1px solid rgba(0,200,0,0.25)',
-          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.8)',
+          background: 'linear-gradient(180deg, rgba(0,30,0,0.9), rgba(0,15,0,0.8))',
+          border: '1px solid #E51B24',
+          boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(229,27,36,0.3)',
         }}
       >
         <div style={{ fontSize: 7, color: 'rgba(0,255,0,0.4)', letterSpacing: '0.15em' }}>CÓDIGO</div>
