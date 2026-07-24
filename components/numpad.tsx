@@ -44,8 +44,8 @@ export default function Numpad({ activeIndex, total, onSelect }: NumpadProps) {
       className="flex flex-col gap-2 p-3 rounded-2xl"
       style={{
         background: 'linear-gradient(180deg, #1c1c1c 0%, #141414 100%)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4)',
+        border: '1px solid #E51B24',
+        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6), 0 4px 12px rgba(229,27,36,0.3)',
         minWidth: 120,
       }}
     >
