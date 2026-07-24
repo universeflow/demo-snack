@@ -86,15 +86,9 @@ export function Navigation() {
           >
             <span className="text-red-500">Snack</span>
             <motion.span
-              className="text-red-500"
-              animate={{
-                textShadow: [
-                  "0 0 10px rgba(255, 59, 59, 0.3)",
-                  "0 0 20px rgba(255, 59, 59, 0.6)",
-                  "0 0 10px rgba(255, 59, 59, 0.3)"
-                ],
-              }}
-              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+              className={scrolled ? "text-white" : "text-black"}
+              animate={scrolled ? {} : {}}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               Pro
             </motion.span>
