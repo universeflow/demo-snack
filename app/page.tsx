@@ -3,6 +3,7 @@ import VendingMachineBanner from "@/components/vending-machine-banner"
 import NuestrosClientes from "@/components/nuestros-clientes"
 import { Nosotros } from "@/components/nosotros"
 import { Servicios } from "@/components/servicios"
+import { Contacto } from "@/components/contacto"
 import { BentoGrid } from "@/components/bento-grid"
 import { ActivationsSection } from "@/components/activations-section"
 import { SocialSection } from "@/components/social-section"
@@ -32,6 +33,9 @@ export default function Home() {
       </div>
       <div className="py-12">
         <SocialSection />
+      </div>
+      <div className="py-12">
+        <Contacto />
       </div>
       <Footer />
     </main>
