@@ -79,8 +79,8 @@ export function Navigation() {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-          <motion.span
-            className="text-2xl font-black tracking-tighter"
+          <motion.div
+            className="text-2xl font-black tracking-tighter relative overflow-hidden"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
@@ -91,7 +91,20 @@ export function Navigation() {
             >
               Pro
             </motion.span>
-          </motion.span>
+            
+            {/* Efecto de brillo deslizante */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+              animate={{
+                x: ["-100%", "100%"],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "linear",
+              }}
+            />
+          </motion.div>
         </Link>
 
         <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
