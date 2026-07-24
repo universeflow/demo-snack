@@ -91,8 +91,8 @@ export function Nosotros() {
         </svg>
 
         {/* Content */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center px-4 py-12">
-        <div className="max-w-7xl w-full">
+        <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ padding: '40px 56px' }}>
+        <div className="w-full">
           {/* Header */}
           <motion.div
             className="text-center mb-16"
