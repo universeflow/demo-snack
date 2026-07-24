@@ -86,8 +86,7 @@ export function Navigation() {
           >
             <span className="text-red-500">Snack</span>
             <motion.span
-              className={scrolled ? "text-white" : "text-black"}
-              animate={scrolled ? {} : {}}
+              className="text-white"
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               Pro
