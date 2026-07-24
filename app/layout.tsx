@@ -17,10 +17,10 @@ const _jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Snack Pro | Bebida Energética Premium",
-  description: "Cero azúcar, 75mg cafeína, sabores 100% naturales. La bebida energética para emprendedores y profesionales.",
-  keywords: ["bebida energética", "cero azúcar", "energía natural", "Snack Pro", "cafeína"],
-    generator: 'v0.app'
+  title: "Snack Pro | Máquina Dispensadora",
+  description: "Máquina Dispensadora de la mejor calidad.",
+  keywords: ["Snack", "Máquina Dispensadora","Snack Pro", "pro"],
+    generator: 'snackpro.cl'
 }
 
 export const viewport: Viewport = {
