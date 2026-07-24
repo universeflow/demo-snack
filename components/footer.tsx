@@ -124,8 +124,15 @@ export function Footer() {
             </p>
 
             {/* Right: Credits */}
+            <a 
+              href="https://www.aenimasoluciones.cl" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-white/40 font-mono text-xs hover:text-white/60 transition-colors cursor-pointer inline-block"
+            >
             <p className="text-white/40 font-mono text-xs hover:text-white/60 transition-colors cursor-pointer">
-              Hecho por <span className="text-red-500 font-bold">Aeníma Soluciones</span>
+              <span className="text-red-500 font-bold">© 2026 aenima-soluciones | Transformación Digital</span>
+              </a>
             </p>
           </div>
         </div>
