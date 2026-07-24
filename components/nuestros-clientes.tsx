@@ -375,7 +375,7 @@ export default function NuestrosClientes() {
               className="w-2 h-10 rounded-full mb-6"
               style={{
                 background: 'linear-gradient(180deg, #2a2a2a, #1a1a1a)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid #E51B24',
                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.8)',
               }}
             />
