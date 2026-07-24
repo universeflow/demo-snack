@@ -69,6 +69,7 @@ export function Nosotros() {
           fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
           borderRadius: 12,
           boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
+          padding: '40px 0',
         }}
       >
         {/* Geometric SVG background - Exact from hero */}
