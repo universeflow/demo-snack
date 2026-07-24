@@ -162,7 +162,7 @@ export function BentoGrid() {
   const isInView = useInView(ref, { once: true, margin: "-50px" })
 
   return (
-    <section id="formula" className="relative w-full h-full bg-white overflow-hidden flex flex-col items-center justify-center">
+    <section id="formula" className="relative w-full h-screen bg-white overflow-hidden flex flex-col items-center justify-center">
       <div className="absolute inset-0 bg-gradient-to-b from-[#121212] via-[#0a0a0a] to-[#121212]" />
 
       <div ref={ref} className="max-w-5xl mx-auto px-6 relative z-10">

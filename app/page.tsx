@@ -8,23 +8,15 @@ import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
-    <main className="bg-black">
+    <main className="bg-black overflow-hidden">
       <Navigation />
       <section className="h-screen bg-black flex items-center justify-center px-4 py-0">
         <VendingMachineBanner />
       </section>
-      <div className="h-screen bg-black">
-        <NuestrosClientes />
-      </div>
-      <div className="h-screen bg-white">
-        <BentoGrid />
-      </div>
-      <div className="h-screen bg-black">
-        <ActivationsSection />
-      </div>
-      <div className="h-screen bg-black">
-        <SocialSection />
-      </div>
+      <NuestrosClientes />
+      <BentoGrid />
+      <ActivationsSection />
+      <SocialSection />
       <Footer />
     </main>
   )

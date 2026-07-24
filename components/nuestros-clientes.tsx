@@ -100,7 +100,7 @@ export default function NuestrosClientes() {
   return (
     <section
       ref={sectionRef}
-      className="w-full h-full flex items-center justify-center px-4"
+      className="w-full h-screen flex items-center justify-center px-4"
       style={{ background: '#0a0a0a' }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
