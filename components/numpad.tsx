@@ -174,16 +174,7 @@ export default function Numpad({ activeIndex, total, onSelect }: NumpadProps) {
         </div>
       </div>
 
-      {/* Status indicator */}
-      <div className="flex items-center gap-1.5 mt-0.5 justify-center">
-        <div
-          className="w-1.5 h-1.5 rounded-full animate-pulse"
-          style={{ background: '#E51B24', boxShadow: '0 0 4px rgba(229,27,36,0.8)' }}
-        />
-        <span style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace', letterSpacing: '0.1em' }}>
-          {selectedLetter !== null ? 'SELECCIONA COL' : 'READY'}
-        </span>
-      </div>
+
     </div>
   );
 }
