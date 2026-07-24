@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/navigation"
 import VendingMachineBanner from "@/components/vending-machine-banner"
 import NuestrosClientes from "@/components/nuestros-clientes"
+import { Nosotros } from "@/components/nosotros"
 import { BentoGrid } from "@/components/bento-grid"
 import { ActivationsSection } from "@/components/activations-section"
 import { SocialSection } from "@/components/social-section"
@@ -14,6 +15,7 @@ export default function Home() {
         <VendingMachineBanner />
       </section>
       <NuestrosClientes />
+      <Nosotros />
       <BentoGrid />
       <ActivationsSection />
       <SocialSection />
