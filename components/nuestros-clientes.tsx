@@ -364,10 +364,11 @@ export default function NuestrosClientes() {
 
           {/* Right side numpad panel */}
           <div
-            className="hidden lg:flex flex-col items-center justify-center py-8 px-3 relative z-10"
+            className="hidden lg:flex flex-col items-center justify-center py-8 px-3 relative z-10 rounded-lg"
             style={{
               background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%)',
-              borderLeft: '1px solid rgba(255,255,255,0.05)',
+              border: '1px solid #E51B24',
+              boxShadow: '0 0 12px rgba(229,27,36,0.2)',
             }}
           >
             {/* Coin slot decoration */}
