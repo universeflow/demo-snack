@@ -14,11 +14,21 @@ export default function Home() {
       <section className="h-screen bg-black flex items-center justify-center px-4 py-0">
         <VendingMachineBanner />
       </section>
-      <NuestrosClientes />
-      <Nosotros />
-      <BentoGrid />
-      <ActivationsSection />
-      <SocialSection />
+      <div className="py-12">
+        <NuestrosClientes />
+      </div>
+      <div className="py-12">
+        <Nosotros />
+      </div>
+      <div className="py-12">
+        <BentoGrid />
+      </div>
+      <div className="py-12">
+        <ActivationsSection />
+      </div>
+      <div className="py-12">
+        <SocialSection />
+      </div>
       <Footer />
     </main>
   )
