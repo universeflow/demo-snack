@@ -117,10 +117,10 @@ export default function NuestrosClientes() {
         }}
       >
         <div
-          className="relative rounded-2xl overflow-hidden flex flex-col lg:flex-row"
+          className="relative rounded-2xl overflow-hidden flex flex-col lg:flex-row w-full"
           style={{
             background: '#121212',
-            minHeight: 520,
+            height: '100%',
             boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.8)',
           }}
         >
