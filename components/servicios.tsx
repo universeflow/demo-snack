@@ -94,7 +94,8 @@ export function Servicios() {
         style={{
           background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 70%, #1e1e1e 100%)',
           boxShadow:
-            '0 0 0 1px rgba(255,255,255,0.06), 0 0 0 4px #1a1a1a, 0 0 0 6px rgba(255,255,255,0.04), 0 40px 120px rgba(0,0,0,0.9)',
+            '0 0 0 1px rgba(200,200,200,0.5), 0 0 0 4px #1a1a1a, 0 0 0 6px rgba(220,220,220,0.3), 0 40px 120px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,255,255,0.08)',
+          border: '2px solid #C0C0C0',
           padding: '6px',
           maxWidth: '1152px',
           height: '692.2px',
