@@ -113,9 +113,9 @@ export default function NuestrosClientes() {
           background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 70%, #1e1e1e 100%)',
           boxShadow:
             '0 0 0 1px rgba(255,255,255,0.06), 0 0 0 4px #1a1a1a, 0 0 0 6px rgba(255,255,255,0.04), 0 40px 120px rgba(0,0,0,0.9)',
-          padding: '40px 56px',
-          maxWidth: '1200px',
-          height: '692.3px',
+          padding: '6px',
+          maxWidth: '1152px',
+          height: '692.2px',
         }}
       >
         <div
