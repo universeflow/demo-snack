@@ -108,7 +108,7 @@ export default function NuestrosClientes() {
       aria-label="Nuestros clientes"
     >
       <div
-        className="relative w-full max-w-5xl rounded-3xl overflow-hidden"
+        className="relative w-full max-w-6xl rounded-3xl overflow-hidden"
         style={{
           background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 70%, #1e1e1e 100%)',
           boxShadow:
