@@ -1,7 +1,30 @@
 "use client"
 
-import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+
+// Same nodes and edges as hero for consistent background pattern
+const NODES = [
+  { x: 2, y: 5 }, { x: 8, y: 15 }, { x: 15, y: 8 }, { x: 22, y: 20 },
+  { x: 5, y: 35 }, { x: 12, y: 45 }, { x: 20, y: 38 }, { x: 28, y: 25 },
+  { x: 35, y: 12 }, { x: 42, y: 30 }, { x: 48, y: 18 }, { x: 3, y: 60 },
+  { x: 10, y: 70 }, { x: 18, y: 58 }, { x: 25, y: 72 }, { x: 32, y: 50 },
+  { x: 40, y: 65 }, { x: 48, y: 80 }, { x: 55, y: 10 }, { x: 62, y: 28 },
+  { x: 70, y: 15 }, { x: 78, y: 5 }, { x: 85, y: 22 }, { x: 92, y: 12 },
+  { x: 98, y: 30 }, { x: 68, y: 45 }, { x: 75, y: 60 }, { x: 82, y: 75 },
+  { x: 90, y: 55 }, { x: 96, y: 70 }, { x: 60, y: 78 }, { x: 55, y: 95 },
+  { x: 45, y: 88 }, { x: 38, y: 95 }, { x: 25, y: 88 }, { x: 15, y: 95 },
+  { x: 5, y: 82 }, { x: 72, y: 90 }, { x: 88, y: 92 }, { x: 50, y: 55 },
+]
+
+const EDGES: [number, number][] = [
+  [0,1],[1,2],[2,3],[0,4],[1,4],[4,5],[5,6],[6,7],[7,3],[3,8],
+  [8,9],[9,10],[2,8],[6,9],[10,18],[18,19],[19,20],[20,21],[21,22],
+  [22,23],[23,24],[19,25],[25,26],[26,27],[27,28],[28,29],[29,24],
+  [25,9],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[11,4],
+  [12,5],[13,6],[14,7],[15,9],[16,25],[17,26],[30,31],[31,32],
+  [32,33],[33,34],[34,35],[35,36],[30,16],[31,17],[32,39],[33,15],
+  [36,11],[37,27],[38,29],[37,38],[37,30],[38,29],[39,25],[39,15],
+]
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -17,54 +40,6 @@ const fadeUpVariants = {
 }
 
 export function Nosotros() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    canvas.width = canvas.offsetWidth
-    canvas.height = canvas.offsetHeight
-
-    // Geometric pattern background similar to hero
-    ctx.fillStyle = '#0a0a0a'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    // Create random nodes
-    const nodes: Array<{ x: number; y: number }> = []
-    const nodeCount = 15
-
-    for (let i = 0; i < nodeCount; i++) {
-      nodes.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-      })
-    }
-
-    // Draw lines connecting nodes
-    ctx.strokeStyle = 'rgba(150, 150, 150, 0.15)'
-    ctx.lineWidth = 0.5
-
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < Math.min(i + 4, nodes.length); j++) {
-        ctx.beginPath()
-        ctx.moveTo(nodes[i].x, nodes[i].y)
-        ctx.lineTo(nodes[j].x, nodes[j].y)
-        ctx.stroke()
-      }
-    }
-
-    // Draw nodes
-    ctx.fillStyle = 'rgba(150, 150, 150, 0.3)'
-    for (const node of nodes) {
-      ctx.beginPath()
-      ctx.arc(node.x, node.y, 2, 0, Math.PI * 2)
-      ctx.fill()
-    }
-  }, [])
 
   const sections = [
     {
@@ -83,11 +58,25 @@ export function Nosotros() {
 
   return (
     <section className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
-      {/* Background Canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full opacity-30"
-      />
+      {/* Geometric SVG background - Same as hero */}
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: 0.08 }}
+      >
+        {EDGES.map(([a, b], i) => (
+          <line
+            key={i}
+            x1={NODES[a].x} y1={NODES[a].y}
+            x2={NODES[b].x} y2={NODES[b].y}
+            stroke="#E51B24" strokeWidth="0.3"
+          />
+        ))}
+        {NODES.map((n, i) => (
+          <circle key={i} cx={n.x} cy={n.y} r="0.55" fill="#E51B24" />
+        ))}
+      </svg>
 
       {/* Content */}
       <div className="relative z-10 w-full h-full flex items-center justify-center px-4 py-12">
