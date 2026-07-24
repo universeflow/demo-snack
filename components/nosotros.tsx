@@ -57,29 +57,41 @@ export function Nosotros() {
   ]
 
   return (
-    <section className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center">
-      {/* Geometric SVG background - Same as hero */}
-      <svg
-        viewBox="0 0 100 100"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 w-full h-full"
-        style={{ opacity: 0.08 }}
+    <section className="relative w-full h-screen bg-black overflow-hidden flex items-center justify-center px-4">
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: 1200,
+          minHeight: 480,
+          background: 'linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)',
+          overflow: 'hidden',
+          fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
+          borderRadius: 12,
+          boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
+        }}
       >
-        {EDGES.map(([a, b], i) => (
-          <line
-            key={i}
-            x1={NODES[a].x} y1={NODES[a].y}
-            x2={NODES[b].x} y2={NODES[b].y}
-            stroke="#E51B24" strokeWidth="0.3"
-          />
-        ))}
-        {NODES.map((n, i) => (
-          <circle key={i} cx={n.x} cy={n.y} r="0.55" fill="#E51B24" />
-        ))}
-      </svg>
+        {/* Geometric SVG background - Exact from hero */}
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid slice"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.08 }}
+        >
+          {EDGES.map(([a, b], i) => (
+            <line
+              key={i}
+              x1={NODES[a].x} y1={NODES[a].y}
+              x2={NODES[b].x} y2={NODES[b].y}
+              stroke="#E51B24" strokeWidth="0.3"
+            />
+          ))}
+          {NODES.map((n, i) => (
+            <circle key={i} cx={n.x} cy={n.y} r="0.55" fill="#E51B24" />
+          ))}
+        </svg>
 
-      {/* Content */}
-      <div className="relative z-10 w-full h-full flex items-center justify-center px-4 py-12">
+        {/* Content */}
+        <div className="relative z-10 w-full h-full flex items-center justify-center px-4 py-12">
         <div className="max-w-7xl w-full">
           {/* Header */}
           <motion.div
@@ -142,6 +154,7 @@ export function Nosotros() {
               </motion.div>
             ))}
           </div>
+        </div>
         </div>
       </div>
     </section>
