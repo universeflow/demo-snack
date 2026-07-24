@@ -403,8 +403,9 @@ export default function NuestrosClientes() {
                 style={{
                   width: '70%',
                   height: 6,
-                  background: 'linear-gradient(180deg, rgba(229,27,36,0.15), transparent)',
-                  border: '1px solid rgba(229,27,36,0.2)',
+                  background: 'linear-gradient(180deg, rgba(229,27,36,0.3), transparent)',
+                  border: '1px solid #E51B24',
+                  boxShadow: '0 0 8px rgba(229,27,36,0.4)',
                 }}
               />
             </div>
