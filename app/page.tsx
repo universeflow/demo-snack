@@ -1,20 +1,30 @@
 import { Navigation } from "@/components/navigation"
-import { HeroSection } from "@/components/hero-section"
-import { FlavorCarousel } from "@/components/flavor-carousel"
-import { BentoGrid } from "@/components/bento-grid"
-import { ActivationsSection } from "@/components/activations-section"
-import { SocialSection } from "@/components/social-section"
+import VendingMachineBanner from "@/components/vending-machine-banner"
+import NuestrosClientes from "@/components/nuestros-clientes"
+import { Nosotros } from "@/components/nosotros"
+import { Servicios } from "@/components/servicios"
+import { Contacto } from "@/components/contacto"
 import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-black overflow-hidden">
       <Navigation />
-      <HeroSection />
-      <FlavorCarousel />
-      <BentoGrid />
-      <ActivationsSection />
-      <SocialSection />
+      <section id="hero" className="h-screen bg-black flex items-center justify-center px-4 py-0">
+        <VendingMachineBanner />
+      </section>
+      <div id="clientes" className="py-12 scroll-section">
+        <NuestrosClientes />
+      </div>
+      <div id="nosotros" className="py-12 scroll-section">
+        <Nosotros />
+      </div>
+      <div id="servicios" className="py-12 scroll-section">
+        <Servicios />
+      </div>
+      <div id="contacto" className="py-12 scroll-section">
+        <Contacto />
+      </div>
       <Footer />
     </main>
   )
