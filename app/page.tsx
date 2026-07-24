@@ -8,9 +8,9 @@ import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black">
+    <main className="bg-black">
       <Navigation />
-      <section className="min-h-screen bg-black flex items-center justify-center p-4">
+      <section className="h-screen bg-black flex items-center justify-center px-4 py-0">
         <VendingMachineBanner />
       </section>
       <NuestrosClientes />
