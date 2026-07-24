@@ -10,19 +10,19 @@ export default function Home() {
   return (
     <main className="bg-black overflow-hidden">
       <Navigation />
-      <section className="h-screen bg-black flex items-center justify-center px-4 py-0">
+      <section id="hero" className="h-screen bg-black flex items-center justify-center px-4 py-0">
         <VendingMachineBanner />
       </section>
-      <div className="py-12">
+      <div id="clientes" className="py-12 scroll-section">
         <NuestrosClientes />
       </div>
-      <div className="py-12">
+      <div id="nosotros" className="py-12 scroll-section">
         <Nosotros />
       </div>
-      <div className="py-12">
+      <div id="servicios" className="py-12 scroll-section">
         <Servicios />
       </div>
-      <div className="py-12">
+      <div id="contacto" className="py-12 scroll-section">
         <Contacto />
       </div>
       <Footer />
