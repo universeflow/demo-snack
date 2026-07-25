@@ -12,10 +12,11 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true,
-    allowedHosts: ['sb-2x0cdhp7xkl0.vercel.run', '.vercel.run', 'localhost', '127.0.0.1'],
+    allowedHosts: 'all',
     hmr: {
-      host: 'sb-2x0cdhp7xkl0.vercel.run',
       protocol: 'wss',
+      host: typeof window !== 'undefined' ? window.location.hostname : 'localhost',
+      port: 443,
     },
   },
   build: {
