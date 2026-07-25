@@ -1,10 +1,8 @@
-"use client"
-
 import type React from "react"
 
 import { motion, AnimatePresence, useSpring } from "framer-motion"
 import { useState } from "react"
-import Image from "next/image"
+import { Image } from "@/lib/next-compat"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const flavors = [

@@ -1,7 +1,5 @@
-"use client"
-
 import { motion } from "framer-motion"
-import Image from "next/image"
+import { Image } from "@/lib/next-compat"
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 40 },

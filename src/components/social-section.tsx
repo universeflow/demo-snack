@@ -1,9 +1,7 @@
-"use client"
-
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Instagram } from "lucide-react"
-import Image from "next/image"
+import { Image } from "@/lib/next-compat"
 
 const instagramPosts = [
   { image: "/energy-drink-lifestyle-gym-workout.jpg", likes: "2.4k" },

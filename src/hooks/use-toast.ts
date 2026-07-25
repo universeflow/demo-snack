@@ -3,7 +3,6 @@ import * as React from "react"
 type ToastActionElement = React.ReactNode
 
 interface Toast {
-  open?: boolean
   onOpenChange?: (open: boolean) => void
   title?: React.ReactNode
   description?: React.ReactNode

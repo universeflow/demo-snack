@@ -17,8 +17,14 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     minify: 'terser',
+    rollupOptions: {
+      onwarn(warning, warn) {
+        if (warning.code === 'THIS_IS_UNDEFINED') return
+        warn(warning)
+      }
+    }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion', 'react-router-dom'],
+    include: ['react', 'react-dom', 'framer-motion', 'react-router-dom', 'lucide-react', 'react-helmet-async'],
   },
 })

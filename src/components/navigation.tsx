@@ -1,9 +1,6 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import Link from "next/link"
-import { useLenis } from "lenis/react"
+import { Link } from "@/lib/next-compat"
 import { Menu, X } from "lucide-react"
 
 const linkVariants = {
