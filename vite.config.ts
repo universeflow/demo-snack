@@ -13,11 +13,6 @@ export default defineConfig({
     port: 5173,
     open: true,
     allowedHosts: 'all',
-    hmr: {
-      protocol: 'wss',
-      host: typeof window !== 'undefined' ? window.location.hostname : 'localhost',
-      port: 443,
-    },
   },
   build: {
     outDir: 'dist',
