@@ -88,8 +88,9 @@ export function UnderConstruction() {
           transition={{ duration: 0.8 }}
           className="mb-8 sm:mb-12"
         >
-          <div className="text-4xl sm:text-5xl md:text-6xl font-black text-red-500">
-            SNACK PRO
+          <div className="text-4xl sm:text-5xl md:text-6xl font-black">
+            <span className="text-red-500">SNACK</span>
+            <span className="text-white"> PRO</span>
           </div>
         </motion.div>
 
