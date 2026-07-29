@@ -110,12 +110,12 @@ export const SAMPLE_CATALOG: Category[] = [
     slug: "snacks",
     order: 1,
     products: [
-      { id: "s1", name: "Lay's Original", slug: "lays-original", format: "45g", brand: "Lay's", featured: true },
-      { id: "s2", name: "Doritos Queso", slug: "doritos-queso", format: "48g", brand: "Doritos" },
-      { id: "s3", name: "Cheetos", slug: "cheetos", format: "32g", brand: "Cheetos" },
-      { id: "s4", name: "Detodito", slug: "detodito", format: "45g", brand: "Detodito" },
-      { id: "s5", name: "Quaker Barra Avena", slug: "quaker-barra", format: "35g", brand: "Quaker" },
-      { id: "s6", name: "Galleta Costa", slug: "galleta-costa", format: "80g", brand: "Costa" },
+      { id: "s1", name: "Lay's Original", slug: "lays-original", format: "45g", brand: "Lay's", featured: true, imageUrl: "/products/lays-original.png" },
+      { id: "s2", name: "Doritos Queso", slug: "doritos-queso", format: "48g", brand: "Doritos", imageUrl: "/products/doritos-queso.png" },
+      { id: "s3", name: "Cheetos", slug: "cheetos", format: "32g", brand: "Cheetos", imageUrl: "/products/cheetos.png" },
+      { id: "s4", name: "Detodito", slug: "detodito", format: "45g", brand: "Detodito", imageUrl: "/products/detodito.png" },
+      { id: "s5", name: "Quaker Barra Avena", slug: "quaker-barra", format: "35g", brand: "Quaker", imageUrl: "/products/quaker-barra.png" },
+      { id: "s6", name: "Galleta Costa", slug: "galleta-costa", format: "80g", brand: "Costa", imageUrl: "/products/galleta-costa.png" },
     ],
   },
   {
@@ -124,10 +124,10 @@ export const SAMPLE_CATALOG: Category[] = [
     slug: "bebidas",
     order: 2,
     products: [
-      { id: "b1", name: "Coca Cola", slug: "coca-cola", format: "350ml", brand: "Coca Cola", featured: true },
-      { id: "b2", name: "Jugo Andina", slug: "jugo-andina", format: "300ml", brand: "Andina" },
-      { id: "b3", name: "Agua Cachantún", slug: "agua-cachantun", format: "500ml", brand: "Cachantún" },
-      { id: "b4", name: "Power Ade", slug: "power-ade", format: "500ml", brand: "Power Ade" },
+      { id: "b1", name: "Coca Cola", slug: "coca-cola", format: "350ml", brand: "Coca Cola", featured: true, imageUrl: "/products/coca-cola.png" },
+      { id: "b2", name: "Jugo Andina", slug: "jugo-andina", format: "300ml", brand: "Andina", imageUrl: "/products/jugo-andina.png" },
+      { id: "b3", name: "Agua Cachantún", slug: "agua-cachantun", format: "500ml", brand: "Cachantún", imageUrl: "/products/agua-cachantun.png" },
+      { id: "b4", name: "Power Ade", slug: "power-ade", format: "500ml", brand: "Power Ade", imageUrl: "/products/power-ade.png" },
     ],
   },
   {
@@ -136,10 +136,10 @@ export const SAMPLE_CATALOG: Category[] = [
     slug: "importados",
     order: 3,
     products: [
-      { id: "i1", name: "Gusto Croissant", slug: "gusto-croissant", format: "50g", brand: "Gusto" },
-      { id: "i2", name: "Arrivo", slug: "arrivo", format: "60g", brand: "Arrivo" },
-      { id: "i3", name: "Serenata", slug: "serenata", format: "40g", brand: "Serenata" },
-      { id: "i4", name: "4x4", slug: "4x4", format: "45g", brand: "4x4" },
+      { id: "i1", name: "Gusto Croissant", slug: "gusto-croissant", format: "50g", brand: "Gusto", imageUrl: "/products/gusto-croissant.png" },
+      { id: "i2", name: "Arrivo", slug: "arrivo", format: "60g", brand: "Arrivo", imageUrl: "/products/arrivo.png" },
+      { id: "i3", name: "Serenata", slug: "serenata", format: "40g", brand: "Serenata", imageUrl: "/products/serenata.png" },
+      { id: "i4", name: "4x4", slug: "4x4", format: "45g", brand: "4x4", imageUrl: "/products/4x4.png" },
     ],
   },
   {
@@ -148,10 +148,10 @@ export const SAMPLE_CATALOG: Category[] = [
     slug: "marcas-propias",
     order: 4,
     products: [
-      { id: "m1", name: "+Energy", slug: "energy", format: "500ml", brand: "SNACK PRO", featured: true },
-      { id: "m2", name: "Golden Juice", slug: "golden-juice", format: "300ml", brand: "SNACK PRO" },
-      { id: "m3", name: "Golden Aloe", slug: "golden-aloe", format: "500ml", brand: "SNACK PRO" },
-      { id: "m4", name: "Golden Drinks", slug: "golden-drinks", format: "350ml", brand: "SNACK PRO" },
+      { id: "m1", name: "+Energy", slug: "energy", format: "500ml", brand: "SNACK PRO", featured: true, imageUrl: "/products/energy.png" },
+      { id: "m2", name: "Golden Juice", slug: "golden-juice", format: "300ml", brand: "SNACK PRO", imageUrl: "/products/golden-juice.png" },
+      { id: "m3", name: "Golden Aloe", slug: "golden-aloe", format: "500ml", brand: "SNACK PRO", imageUrl: "/products/golden-aloe.png" },
+      { id: "m4", name: "Golden Drinks", slug: "golden-drinks", format: "350ml", brand: "SNACK PRO", imageUrl: "/products/golden-drinks.png" },
     ],
   },
   {
@@ -160,9 +160,9 @@ export const SAMPLE_CATALOG: Category[] = [
     slug: "maquinas-vending",
     order: 5,
     products: [
-      { id: "v1", name: "Máquina Snack + Refresco", slug: "maquina-snack-refresco", format: "Combinada", featured: true },
-      { id: "v2", name: "Máquina Refresco", slug: "maquina-refresco", format: "Bebidas" },
-      { id: "v3", name: "Máquina Café", slug: "maquina-cafe", format: "Café caliente" },
+      { id: "v1", name: "Máquina Snack + Refresco", slug: "maquina-snack-refresco", format: "Combinada", featured: true, imageUrl: "/products/maquina-snack-refresco.png" },
+      { id: "v2", name: "Máquina Refresco", slug: "maquina-refresco", format: "Bebidas", imageUrl: "/products/maquina-refresco.png" },
+      { id: "v3", name: "Máquina Café", slug: "maquina-cafe", format: "Café caliente", imageUrl: "/products/maquina-cafe.png" },
     ],
   },
 ]
