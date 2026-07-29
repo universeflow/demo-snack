@@ -5,7 +5,13 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  define: {
+    global: 'globalThis',
+  },
   resolve: {
+    // Fuerza una única copia de React (evita "Invalid hook call" al
+    // convivir con @react-pdf/renderer, que trae su propio reconciliador)
+    dedupe: ['react', 'react-dom'],
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
@@ -28,6 +34,6 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion', 'react-router-dom', 'lucide-react', 'react-helmet-async'],
+    include: ['react', 'react-dom', 'framer-motion', 'react-router-dom', 'lucide-react', 'react-helmet-async', 'buffer'],
   },
 })

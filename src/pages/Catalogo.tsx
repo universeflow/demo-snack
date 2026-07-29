@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import { Search } from "lucide-react"
 import { useCatalog } from "@/hooks/use-catalog"
 import { ProductCard } from "@/components/catalog/product-card"
+import { DownloadPdfButton } from "@/components/catalog/download-pdf-button"
 
 export default function Catalogo() {
   const { categories, loading, usingSampleData } = useCatalog()
@@ -55,17 +56,20 @@ export default function Catalogo() {
             </p>
           </motion.div>
 
-          {/* Buscador */}
-          <div className="relative mt-8 max-w-md">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar producto o marca..."
-              className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition-colors focus:border-red-snack"
-              aria-label="Buscar producto"
-            />
+          {/* Buscador + descarga PDF */}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative w-full max-w-md">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Buscar producto o marca..."
+                className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition-colors focus:border-red-snack"
+                aria-label="Buscar producto"
+              />
+            </div>
+            <DownloadPdfButton categories={categories} disabled={loading} />
           </div>
         </div>
       </header>
