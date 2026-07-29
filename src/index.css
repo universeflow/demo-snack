@@ -1,11 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-red-snack: #e51b24;
+}
 
 @layer base {
   body {
     @apply bg-black text-white;
   }
+}
+
+/* Ocultar scrollbar en las tabs de categorías */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
 
 /* Custom animations */
