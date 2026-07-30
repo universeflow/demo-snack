@@ -1,12 +1,11 @@
-"use client"
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { ChevronLeft, ChevronRight, Grid3x3, X, Pause, Play } from 'lucide-react'
+import { clients, GRID_COLS } from './data'
+import Capsule from './capsule'
+import Numpad from './numpad'
+import { motion } from "framer-motion"
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Grid3x3, X, Pause, Play } from 'lucide-react';
-import { clients, GRID_COLS } from './data';
-import Capsule from './capsule';
-import Numpad from './numpad';
-
-const AUTOPLAY_MS = 5000;
+const AUTOPLAY_MS = 5000
 
 function GeometricPattern({ opacity = 0.06 }: { opacity?: number }) {
   return (
@@ -24,102 +23,149 @@ function GeometricPattern({ opacity = 0.06 }: { opacity?: number }) {
       </defs>
       <rect width="100%" height="100%" fill="url(#geo)" />
     </svg>
-  );
+  )
 }
 
 export default function NuestrosClientes() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [animDir, setAnimDir] = useState<'left' | 'right' | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isAutoplay, setIsAutoplay] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-  const [showGrid, setShowGrid] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [animDir, setAnimDir] = useState<'left' | 'right' | null>(null)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [isAutoplay, setIsAutoplay] = useState(true)
+  const [isPaused, setIsPaused] = useState(false)
+  const [showGrid, setShowGrid] = useState(false)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
 
-  const total = clients.length;
-  const activeClient = clients[activeIndex];
+  const total = clients.length
+  const activeClient = clients[activeIndex]
 
   const goTo = useCallback((index: number) => {
     setActiveIndex((prev) => {
-      if (index === prev) return prev;
-      setAnimDir(index > prev ? 'left' : 'right');
-      setIsAnimating(true);
-      return index;
-    });
-  }, []);
+      if (index === prev) return prev
+      setAnimDir(index > prev ? 'left' : 'right')
+      setIsAnimating(true)
+      return index
+    })
+  }, [])
 
   const prev = useCallback(() => {
     setActiveIndex((i) => {
-      setAnimDir('right');
-      setIsAnimating(true);
-      return (i - 1 + total) % total;
-    });
-  }, [total]);
+      setAnimDir('right')
+      setIsAnimating(true)
+      return (i - 1 + total) % total
+    })
+  }, [total])
 
   const next = useCallback(() => {
     setActiveIndex((i) => {
-      setAnimDir('left');
-      setIsAnimating(true);
-      return (i + 1) % total;
-    });
-  }, [total]);
+      setAnimDir('left')
+      setIsAnimating(true)
+      return (i + 1) % total
+    })
+  }, [total])
 
-  // Animation lock
   useEffect(() => {
     if (isAnimating) {
-      timeoutRef.current = setTimeout(() => setIsAnimating(false), 500);
+      timeoutRef.current = setTimeout(() => setIsAnimating(false), 500)
     }
-    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
-  }, [isAnimating]);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [isAnimating])
 
-  // Autoplay
   useEffect(() => {
-    if (!isAutoplay || isPaused || showGrid) return;
-    const id = setInterval(() => next(), AUTOPLAY_MS);
-    return () => clearInterval(id);
-  }, [isAutoplay, isPaused, showGrid, next]);
+    if (!isAutoplay || isPaused || showGrid) return
+    const id = setInterval(() => next(), AUTOPLAY_MS)
+    return () => clearInterval(id)
+  }, [isAutoplay, isPaused, showGrid, next])
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (showGrid) {
-        if (e.key === 'Escape') setShowGrid(false);
-        return;
+        if (e.key === 'Escape') setShowGrid(false)
+        return
       }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [prev, next, showGrid]);
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        prev()
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        next()
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [prev, next, showGrid])
 
-  const leftIndex = (activeIndex - 1 + total) % total;
-  const rightIndex = (activeIndex + 1) % total;
+  const leftIndex = (activeIndex - 1 + total) % total
+  const rightIndex = (activeIndex + 1) % total
 
   return (
     <section
       ref={sectionRef}
-      className="w-full h-screen flex items-center justify-center px-4"
+      id="clientes"
+      className="w-full min-h-screen flex items-center justify-center px-4 py-12"
       style={{ background: '#0a0a0a' }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       aria-roledescription="carrusel"
       aria-label="Nuestros clientes"
     >
-      <div
-        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-2 sm:px-4"
+      {/* Outer LED Glowing Chassis Container */}
+      <motion.div
+        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-2 sm:px-4 border-2 border-red-600/70"
+        animate={{
+          boxShadow: [
+            "0 0 12px rgba(229,27,36,0.25), inset 0 0 8px rgba(229,27,36,0.15)",
+            "0 0 28px rgba(229,27,36,0.65), inset 0 0 16px rgba(229,27,36,0.35)",
+            "0 0 12px rgba(229,27,36,0.25), inset 0 0 8px rgba(229,27,36,0.15)",
+          ],
+          borderColor: [
+            "rgba(229,27,36,0.45)",
+            "rgba(229,27,36,0.85)",
+            "rgba(229,27,36,0.45)",
+          ]
+        }}
+        transition={{
+          duration: 2.8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
         style={{
           background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 70%, #1e1e1e 100%)',
-          boxShadow:
-            '0 0 0 1px rgba(200,200,200,0.5), 0 0 0 4px #1a1a1a, 0 0 0 6px rgba(220,220,220,0.3), 0 40px 120px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,255,255,0.08)',
-          border: '2px solid #C0C0C0',
           padding: '3px sm:4px md:6px',
           maxWidth: '100%',
           height: 'auto',
           minHeight: '400px',
         }}
       >
+        {/* Subtle LED Corner Bulbs */}
+        <motion.div
+          className="absolute top-2 left-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.45 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 1.35 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+
         <div
           className="relative rounded-2xl overflow-hidden flex flex-col lg:flex-row w-full"
           style={{
@@ -132,15 +178,14 @@ export default function NuestrosClientes() {
 
           {/* Corner accents */}
           <div className="absolute top-0 left-0 w-32 h-32 pointer-events-none overflow-hidden opacity-30">
-            <div style={{ position:'absolute', top:16, left:16, width:80, height:80, border:'1px solid #E51B24', borderRadius:4, transform:'rotate(15deg)' }} />
+            <div style={{ position: 'absolute', top: 16, left: 16, width: 80, height: 80, border: '1px solid #E51B24', borderRadius: 4, transform: 'rotate(15deg)' }} />
           </div>
           <div className="absolute bottom-0 right-16 w-32 h-32 pointer-events-none overflow-hidden opacity-20">
-            <div style={{ position:'absolute', bottom:16, right:16, width:60, height:60, border:'1px solid #E51B24', borderRadius:4, transform:'rotate(25deg)' }} />
+            <div style={{ position: 'absolute', bottom: 16, right: 16, width: 60, height: 60, border: '1px solid #E51B24', borderRadius: 4, transform: 'rotate(25deg)' }} />
           </div>
 
           {/* Main content area */}
           <div className="flex-1 flex flex-col items-center justify-between py-8 px-4 relative z-10">
-
             {/* Header */}
             <div className="text-center mb-2 w-full">
               <div className="flex items-center justify-center gap-3 mb-1">
@@ -276,7 +321,6 @@ export default function NuestrosClientes() {
 
             {/* Progress + counter row */}
             <div className="flex items-center gap-3 mb-3 mt-3">
-              {/* Autoplay toggle */}
               <button
                 onClick={() => setIsAutoplay(!isAutoplay)}
                 aria-label={isAutoplay ? 'Pausar reproducción automática' : 'Activar reproducción automática'}
@@ -292,7 +336,6 @@ export default function NuestrosClientes() {
                 {isAutoplay ? <Pause size={12} /> : <Play size={12} />}
               </button>
 
-              {/* Dots */}
               <div className="flex items-center gap-1.5 flex-wrap justify-center" role="tablist">
                 {clients.map((c, i) => (
                   <button
@@ -312,7 +355,6 @@ export default function NuestrosClientes() {
                 ))}
               </div>
 
-              {/* Counter */}
               <span
                 className="font-mono font-bold flex-shrink-0"
                 style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em' }}
@@ -373,7 +415,6 @@ export default function NuestrosClientes() {
               boxShadow: '0 0 12px rgba(229,27,36,0.2)',
             }}
           >
-            {/* Coin slot decoration */}
             <div
               className="w-2 h-10 rounded-full mb-6"
               style={{
@@ -385,7 +426,6 @@ export default function NuestrosClientes() {
 
             <Numpad activeIndex={activeIndex} total={total} onSelect={goTo} />
 
-            {/* Dispense tray decoration */}
             <div
               className="mt-4 w-full max-w-[140px] rounded-lg p-2"
               style={{
@@ -413,7 +453,7 @@ export default function NuestrosClientes() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Grid modal */}
       {showGrid && (
@@ -427,12 +467,12 @@ export default function NuestrosClientes() {
         >
           <div
             className="relative w-full max-w-2xl rounded-2xl p-6"
-                  style={{
-                    background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
-                    border: '1px solid #E51B24',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08)',
-                    color: 'rgba(255,255,255,0.9)',
-                  }}
+            style={{
+              background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
+              border: '1px solid #E51B24',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.9)',
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -465,7 +505,10 @@ export default function NuestrosClientes() {
               {clients.map((c, i) => (
                 <button
                   key={c.id}
-                  onClick={() => { goTo(i); setShowGrid(false); }}
+                  onClick={() => {
+                    goTo(i)
+                    setShowGrid(false)
+                  }}
                   className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-150 active:scale-95"
                   style={{
                     background: i === activeIndex ? 'rgba(229,27,36,0.15)' : 'rgba(255,255,255,0.03)',
@@ -505,5 +548,5 @@ export default function NuestrosClientes() {
         </div>
       )}
     </section>
-  );
+  )
 }

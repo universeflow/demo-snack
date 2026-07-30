@@ -1,163 +1,136 @@
-"use client"
-
-import { motion } from 'framer-motion'
-
-// Same nodes and edges as hero for consistent background pattern
-const NODES = [
-  { x: 2, y: 5 }, { x: 8, y: 15 }, { x: 15, y: 8 }, { x: 22, y: 20 },
-  { x: 5, y: 35 }, { x: 12, y: 45 }, { x: 20, y: 38 }, { x: 28, y: 25 },
-  { x: 35, y: 12 }, { x: 42, y: 30 }, { x: 48, y: 18 }, { x: 3, y: 60 },
-  { x: 10, y: 70 }, { x: 18, y: 58 }, { x: 25, y: 72 }, { x: 32, y: 50 },
-  { x: 40, y: 65 }, { x: 48, y: 80 }, { x: 55, y: 10 }, { x: 62, y: 28 },
-  { x: 70, y: 15 }, { x: 78, y: 5 }, { x: 85, y: 22 }, { x: 92, y: 12 },
-  { x: 98, y: 30 }, { x: 68, y: 45 }, { x: 75, y: 60 }, { x: 82, y: 75 },
-  { x: 90, y: 55 }, { x: 96, y: 70 }, { x: 60, y: 78 }, { x: 55, y: 95 },
-  { x: 45, y: 88 }, { x: 38, y: 95 }, { x: 25, y: 88 }, { x: 15, y: 95 },
-  { x: 5, y: 82 }, { x: 72, y: 90 }, { x: 88, y: 92 }, { x: 50, y: 55 },
-]
-
-const EDGES: [number, number][] = [
-  [0,1],[1,2],[2,3],[0,4],[1,4],[4,5],[5,6],[6,7],[7,3],[3,8],
-  [8,9],[9,10],[2,8],[6,9],[10,18],[18,19],[19,20],[20,21],[21,22],
-  [22,23],[23,24],[19,25],[25,26],[26,27],[27,28],[28,29],[29,24],
-  [25,9],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[11,4],
-  [12,5],[13,6],[14,7],[15,9],[16,25],[17,26],[30,31],[31,32],
-  [32,33],[33,34],[34,35],[35,36],[30,16],[31,17],[32,39],[33,15],
-  [36,11],[37,27],[38,29],[37,38],[37,30],[38,29],[39,25],[39,15],
-]
+import React from "react"
+import { motion } from "framer-motion"
+import { ShieldCheck, Zap, Users, Award } from "lucide-react"
 
 const fadeUpVariants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     transition: {
-      delay: i * 0.2,
-      duration: 0.8,
+      delay: i * 0.15,
+      duration: 0.7,
       ease: [0.25, 0.4, 0.25, 1],
     },
   }),
 }
 
+const features = [
+  {
+    icon: ShieldCheck,
+    title: "Garantía & Confianza",
+    description: "Equipos de última tecnología con mantenimiento y soporte técnico constante.",
+  },
+  {
+    icon: Zap,
+    title: "Servicio Rápido",
+    description: "Abastecimiento continuo y respuesta inmediata ante cualquier requerimiento.",
+  },
+  {
+    icon: Users,
+    title: "Atención Personalizada",
+    description: "Nos adaptamos a las necesidades específicas y flujo de personas de tu empresa.",
+  },
+  {
+    icon: Award,
+    title: "Calidad Premium",
+    description: "Selección rigurosa de productos de alta calidad y marcas reconocidas.",
+  },
+]
+
 export function Nosotros() {
-
-  const sections = [
-    {
-      title: 'Quiénes Somos',
-      content: 'SNACK Pro es una empresa líder en soluciones de máquinas dispensadoras inteligentes. Con más de 50 máquinas instaladas y un 99% de disponibilidad, nos comprometemos a revolucionar la forma en que las empresas distribuyen snacks y bebidas a sus empleados.',
-    },
-    {
-      title: 'Misión',
-      content: 'Proporcionar máquinas dispensadoras de última generación que mejoren la experiencia de los usuarios, aumenten la productividad en las empresas y ofrezcan soluciones de distribución automática confiables y eficientes.',
-    },
-    {
-      title: 'Visión',
-      content: 'Ser la plataforma de dispensación automática más innovadora de la región, transformando el mercado con tecnología inteligente, sostenibilidad ambiental y un servicio de excelencia en cada punto de contacto.',
-    },
-  ]
-
   return (
-    <section className="relative w-full min-h-screen bg-black overflow-hidden flex items-center justify-center px-2 sm:px-4 py-8 md:py-0">
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: 1200,
-          minHeight: 'auto',
-          background: 'linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)',
-          overflow: 'hidden',
-          fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
-          borderRadius: 8,
-          boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
-          padding: '20px 0 sm:30px md:40px 0',
-        }}
-      >
-        {/* Geometric SVG background - Exact from hero */}
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid slice"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.08 }}
-        >
-          {EDGES.map(([a, b], i) => (
-            <line
-              key={i}
-              x1={NODES[a].x} y1={NODES[a].y}
-              x2={NODES[b].x} y2={NODES[b].y}
-              stroke="#E51B24" strokeWidth="0.3"
-            />
-          ))}
-          {NODES.map((n, i) => (
-            <circle key={i} cx={n.x} cy={n.y} r="0.55" fill="#E51B24" />
-          ))}
-        </svg>
+    <section id="nosotros" className="relative py-24 bg-black text-white overflow-hidden border-t border-white/10">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Content */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ padding: '16px 20px sm:24px md:40px md:56px' }}>
-        <div className="w-full">
-          {/* Header */}
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left Column: Text & Values */}
           <motion.div
-            className="text-center mb-8 sm:mb-12 md:mb-16"
-            initial={{ opacity: 0, y: -40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="space-y-8"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4">
-              NOSOTROS
-            </h2>
-            <div className="w-16 sm:w-20 h-1 bg-red-500 mx-auto rounded-full" />
+            <div className="space-y-4">
+              <motion.span
+                custom={0}
+                variants={fadeUpVariants}
+                className="inline-block text-red-500 font-mono text-sm tracking-[0.25em] uppercase font-bold"
+              >
+                SOBRE NOSOTROS
+              </motion.span>
+              <motion.h2
+                custom={1}
+                variants={fadeUpVariants}
+                className="text-4xl md:text-5xl font-black tracking-tight leading-tight"
+              >
+                Revolucionando la experiencia de <span className="text-red-500">vending</span> para tu empresa
+              </motion.h2>
+            </div>
+
+            <motion.p
+              custom={2}
+              variants={fadeUpVariants}
+              className="text-white/70 text-base md:text-lg leading-relaxed"
+            >
+              En <strong className="text-white font-bold">SNACK PRO</strong> nos dedicamos a transformar la pausa diaria en una experiencia eficiente, moderna y conveniente. Proveemos soluciones automáticas de dispensación con tecnología de punta y un servicio integral de gestión.
+            </motion.p>
+
+            {/* Feature Grid */}
+            <div className="grid sm:grid-cols-2 gap-6 pt-4">
+              {features.map((feature, index) => {
+                const Icon = feature.icon
+                return (
+                  <motion.div
+                    key={feature.title}
+                    custom={3 + index * 0.5}
+                    variants={fadeUpVariants}
+                    className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/40 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3 text-red-500">
+                      <Icon size={20} />
+                    </div>
+                    <h3 className="font-bold text-white text-base mb-1">{feature.title}</h3>
+                    <p className="text-xs text-white/60 leading-relaxed">{feature.description}</p>
+                  </motion.div>
+                )
+              })}
+            </div>
           </motion.div>
 
-          {/* Three Sections Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            {sections.map((section, index) => (
-              <motion.div
-                key={section.title}
-                variants={fadeUpVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={index}
-                className="flex flex-col"
-              >
-                <div
-                  className="flex flex-col h-full p-8 rounded-2xl"
-                  style={{
-                    background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
-                    border: '1px solid #E51B24',
-                    boxShadow:
-                      'inset 0 1px 3px rgba(255,255,255,0.05), 0 0 20px rgba(229,27,36,0.15)',
-                  }}
-                >
-                  {/* Section Title */}
-                  <h3 className="text-2xl font-bold text-red-500 mb-4">
-                    {section.title}
-                  </h3>
+          {/* Right Column: Visual Banner */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative flex justify-center"
+          >
+            <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden border border-white/15 bg-gradient-to-b from-white/10 to-transparent p-4 flex flex-col justify-between shadow-2xl">
+              <div className="relative w-full h-3/4 rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center">
+                <img
+                  src="/images/demo.png"
+                  alt="Máquina Vending SNACK Pro"
+                  className="max-h-full max-w-full object-contain p-4 filter drop-shadow-[0_10px_20px_rgba(229,27,36,0.3)]"
+                />
+              </div>
 
-                  {/* Divider */}
-                  <div className="w-12 h-1 bg-red-500 rounded-full mb-6" />
-
-                  {/* Content */}
-                  <p className="text-gray-300 leading-relaxed text-sm md:text-base flex-grow">
-                    {section.content}
-                  </p>
-
-                  {/* Footer accent */}
-                  <div className="mt-6 pt-6 border-t border-red-500/20">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full" />
-                      <span className="text-xs text-red-500/80 font-semibold">
-                        SNACK PRO
-                      </span>
-                    </div>
-                  </div>
+              <div className="p-4 text-center bg-black/40 rounded-2xl border border-white/10 backdrop-blur-md">
+                <div className="text-2xl font-black tracking-wider text-white">
+                  <span className="text-red-500">SNACK</span> PRO
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                <div className="text-xs text-white/60 font-mono tracking-widest uppercase mt-1">
+                  Innovación & Calidad en Vending
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
   )
 }
+
+export default Nosotros
