@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Instagram, Facebook, Linkedin } from "lucide-react
 
 export function Footer() {
   return (
-    <footer className="relative bg-black pt-12 sm:pt-16 pb-8 overflow-hidden border-t border-white/10 text-white">
+    <footer className="relative pt-12 sm:pt-16 pb-8 overflow-hidden border-t border-white/10 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main content grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -18,7 +18,7 @@ export function Footer() {
               }}
             >
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3330.1234567890!2d-70.5!3d-33.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c41a00000001%3A0x1234567890!2sSnack%20Pro!5e0!3m2!1ses!2scl!4v1234567890"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106557.88453657899!2d-70.59993693379505!3d-33.42496783378546!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662cf19a8dab4bd%3A0x93c1479cef180269!2sLas%20Condes%2C%20Santiago%20Metropolitan%20Region!5e0!3m2!1sen!2scl!4v1785534767742!5m2!1sen!2scl"
                 width="100%"
                 height="100%"
                 style={{ 
@@ -45,9 +45,8 @@ export function Footer() {
                 </div>
                 <div>
                   <p className="text-white/50 text-xs font-mono mb-0.5">TELÉFONO</p>
-                  <a href="tel:+56912345678" className="text-white hover:text-red-500 transition-colors text-sm font-medium">
-                    +56 9 1234 5678
-                  </a>
+                    +569 68978999
+                  
                 </div>
               </div>
 
@@ -80,31 +79,14 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Right: Social Links */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-white font-bold text-base md:text-lg tracking-wide">SÍGUENOS</h3>
-            <div className="space-y-3">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white/70 hover:text-red-500 transition-colors text-sm font-medium">
-                <Instagram size={18} className="text-red-500" />
-                Instagram
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white/70 hover:text-red-500 transition-colors text-sm font-medium">
-                <Facebook size={18} className="text-red-500" />
-                Facebook
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white/70 hover:text-red-500 transition-colors text-sm font-medium">
-                <Linkedin size={18} className="text-red-500" />
-                LinkedIn
-              </a>
-            </div>
-          </div>
+    
         </div>
 
         {/* Bottom footer */}
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Left: Logo */}
-            <a href="#hero" className="flex items-center gap-1 text-2xl font-black">
+            <a href="#inicio" className="flex items-center gap-1 text-2xl font-black">
               <span className="text-red-500">Snack</span>
               <span className="text-white">Pro</span>
             </a>

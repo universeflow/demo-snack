@@ -1,6 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { getServicioSection, ServicioSectionPayload } from '../src/lib/get-servicios-content';
+import { BlocksRenderer } from "@strapi/blocks-react-renderer"
+
+
 
 const SERVICES = [
 	{
@@ -88,6 +92,26 @@ function GeometricPattern({ opacity = 0.06 }: { opacity?: number }) {
 }
 
 export function Servicios() {
+	const [servicio, setServicio] = useState<ServicioSectionPayload | null>(null);
+
+useEffect(() => {
+	getServicioSection()
+		.then((items) => {
+			if (items && items.length > 0) {
+				const servicioItem = items[0];
+				console.log("servicio raw item:", servicioItem);
+				setServicio(servicioItem);
+			} else {
+				setServicio(null);
+			}
+		})
+		.catch((error) => {
+			console.error("Error cargando los datos de Servicio:", error);
+			setServicio(null);
+		});
+	}, []);
+
+	const servicioDescripcion = servicio?.descripcion;	
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [isAnimating, setIsAnimating] = useState(false);
 	const sectionRef = useRef<HTMLElement>(null);
@@ -112,8 +136,7 @@ export function Servicios() {
 		<section
 			ref={sectionRef}
 			id="servicios"
-			className="w-full min-h-screen flex items-center justify-center px-4 py-12"
-			style={{ background: '#0a0a0a' }}
+			className="py-20 text-white px-4"
 			aria-label="Nuestros servicios"
 		>
 			{/* Outer LED Glowing Chassis Container - Same size and structure as Nuestros Clientes */}
@@ -224,6 +247,17 @@ export function Servicios() {
 						{/* ...existing service items/cards... */}
 					</div>
 				</div>
+				
+					 {servicioDescripcion ? (
+						<div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10 mx-auto mt-12 max-w-7xl">
+						<div className="col-span-full text-center">
+							<p className="text-sm md:text-base text-white/80 leading-relaxed">
+								<BlocksRenderer content={servicioDescripcion as any} />
+							</p>
+						</div>
+						</div>
+					) : null }
+				
 			</motion.div>
 		</section>
 	);

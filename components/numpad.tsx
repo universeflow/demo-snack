@@ -15,13 +15,21 @@ export default function Numpad({ activeIndex, total, onSelect }: NumpadProps) {
   const [selectedLetter, setSelectedLetter] = useState<number | null>(null);
   const [displayCode, setDisplayCode] = useState<string>('__');
 
-  const activeClient = clients[activeIndex];
+  // Validar que activeIndex esté en rango y que clients tenga datos
+  const activeClient = (clients && clients.length > 0 && activeIndex < clients.length) 
+    ? clients[activeIndex] 
+    : null;
+  
   const rows = Math.ceil(total / GRID_COLS);
 
   // Keep display in sync with active client
   useEffect(() => {
-    setDisplayCode(activeClient.code);
-  }, [activeClient.code]);
+    if (activeClient?.id) {
+      setDisplayCode(String(activeClient.id));
+    } else {
+      setDisplayCode('__');
+    }
+  }, [activeClient]);
 
   const handleLetter = (row: number) => {
     if (row >= rows) return;
@@ -33,7 +41,8 @@ export default function Numpad({ activeIndex, total, onSelect }: NumpadProps) {
     if (selectedLetter === null) return;
     const index = selectedLetter * GRID_COLS + (col - 1);
     if (index < total) {
-      setDisplayCode(clients[index].code);
+      const targetClient = clients[index];
+      setDisplayCode(targetClient?.id ? String(targetClient.id) : '__');
       onSelect(index);
       setSelectedLetter(null);
     }

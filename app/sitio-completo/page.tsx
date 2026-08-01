@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from "react"
 import Navigation from "@/components/navigation"
 import VendingMachineBanner from "@/components/vending-machine-banner"
@@ -7,25 +9,18 @@ import Servicios from "@/components/servicios"
 import Contacto from "@/components/contacto"
 import Footer from "@/components/footer"
 
-export default function App() {
+export default function HomePage() {
   const [activeSection, setActiveSection] = useState<string>("inicio")
 
   useEffect(() => {
-    // read hash on load to set section
-    if (typeof window !== "undefined") {
-      const hash = window.location.hash.replace("#", "")
-      if (hash === "nosotros" || hash === "servicios" || hash === "contacto" || hash === "inicio") {
-        setActiveSection(hash || "inicio")
-      } else {
-        setActiveSection("inicio")
-      }
-      const onPop = () => {
-        const h = window.location.hash.replace("#", "") || "inicio"
-        setActiveSection(h)
-      }
-      window.addEventListener("popstate", onPop)
-      return () => window.removeEventListener("popstate", onPop)
+    const hash = typeof window !== "undefined" ? window.location.hash.replace("#", "") : ""
+    setActiveSection(hash === "nosotros" || hash === "servicios" || hash === "contacto" ? hash : "inicio")
+    const onPop = () => {
+      const h = window.location.hash.replace("#", "") || "inicio"
+      setActiveSection(h)
     }
+    window.addEventListener("popstate", onPop)
+    return () => window.removeEventListener("popstate", onPop)
   }, [])
 
   const handleNavigate = (id: string) => setActiveSection(id)
@@ -34,7 +29,7 @@ export default function App() {
     <main className="min-h-screen bg-transparent overflow-hidden">
       <Navigation activeSection={activeSection} onNavigate={handleNavigate} />
 
-      {/* Inicio: hero + nuestros clientes */}
+      {/* Inicio */}
       {activeSection === "inicio" && (
         <section id="inicio" className="bg-transparent pt-20">
           <div className="max-w-7xl mx-auto px-4 py-4">
@@ -46,21 +41,18 @@ export default function App() {
         </section>
       )}
 
-      {/* Servicios */}
-      {activeSection === "servicios" && (
-        <div id="servicios" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
-          <Servicios />
-        </div>
-      )}
-
-      {/* Nosotros */}
       {activeSection === "nosotros" && (
         <div id="nosotros" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
           <Nosotros />
         </div>
       )}
 
-      {/* Contacto */}
+      {activeSection === "servicios" && (
+        <div id="servicios" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
+          <Servicios />
+        </div>
+      )}
+
       {activeSection === "contacto" && (
         <div id="contacto" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
           <Contacto />

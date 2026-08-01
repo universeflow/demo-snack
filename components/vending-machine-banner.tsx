@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react';
+import Carousel from "./carousel"
 
 /* ─── Geometric background nodes ─── */
 const NODES = [
@@ -62,7 +63,8 @@ export default function VendingMachineBanner() {
         width: '100%',
         maxWidth: 1200,
         minHeight: 480,
-        background: 'linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)',
+        /* background gradient kept for visual depth; overall page bg is gray */
+        background: 'linear-gradient(135deg, var(--panel-bg) 0%, rgba(10,10,10,0.75) 100%)',
         overflow: 'hidden',
         fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
         borderRadius: 12,
@@ -131,55 +133,36 @@ export default function VendingMachineBanner() {
           gap: 24,
         }}
       >
-        {/* LEFT: copy */}
-        <div style={{ flex: '0 0 auto', maxWidth: 440 }}>
-          <div style={{ lineHeight: 1.05, marginBottom: 28 }}>
-            <div style={{ fontSize: 'clamp(44px, 6.5vw, 88px)', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-1.5px' }}>ELIGE</div>
-            <div style={{ fontSize: 'clamp(44px, 6.5vw, 88px)', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-1.5px' }}>PRESIONA</div>
-            <div style={{ fontSize: 'clamp(44px, 6.5vw, 88px)', fontWeight: 900, color: '#FF2A35', letterSpacing: '-1.5px', textShadow: '0 0 40px rgba(255,42,53,0.5)' }}>DISFRUTA</div>
-          </div>
-
-          <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
-            <div>
-              <div
-                style={{
-                  fontSize: 'clamp(42px, 6vw, 76px)',
-                  fontWeight: 900,
-                  color: '#FF2A35',
-                  lineHeight: 1,
-                  textShadow: '0 0 30px rgba(255,42,53,0.4)',
-                  marginBottom: 6,
-                }}
-              >
-                +50
-              </div>
-              <div style={{ fontSize: 'clamp(13px, 1.6vw, 17px)', fontWeight: 700, color: '#A1A1AA', letterSpacing: 0.5 }}>
-                Máquinas instaladas
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: 'clamp(42px, 6vw, 76px)',
-                  fontWeight: 900,
-                  color: '#FF2A35',
-                  lineHeight: 1,
-                  textShadow: '0 0 30px rgba(255,42,53,0.4)',
-                  marginBottom: 6,
-                }}
-              >
-                99%
-              </div>
-              <div style={{ fontSize: 'clamp(13px, 1.6vw, 17px)', fontWeight: 700, color: '#A1A1AA', letterSpacing: 0.5 }}>
-                Disponibilidad
-              </div>
+        {/* LEFT: reemplazado - solo carrusel (se eliminaron títulos y estadísticas) */}
+        <div style={{ flex: '0 0 auto', maxWidth: 520 }} className="w-full">
+          <div style={{ marginBottom: 20 }} className="w-full flex justify-center">
+            <div style={{ width: '100%', maxWidth: 520 }}>
+              <Carousel
+                slides={[
+                  { src: "/images/slide1.jpg", title: "", subtitle: "", objectPosition: "right center" },
+                  { src: "/images/slide2.jpg", title: "", subtitle: "", objectPosition: "center" },
+                  { src: "/images/slide3.jpg", title: "", subtitle: "", objectPosition: "center" },
+                ]}
+                height={200}
+                intervalMs={3000}
+              />
             </div>
           </div>
         </div>
 
-        {/* RIGHT: machine */}
-        <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <VendingMachine dispensing={dispensing} selectedItem={selectedItem} />
+        {/* CENTERED HERO AREA: carrusel con el mismo ancho que 'nosotros' */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-full max-w-7xl mx-auto px-6">
+            <Carousel
+              slides={[
+                { src: "/images/slide1.jpg", title: "ELIGE", subtitle: "Máquinas inteligentes", objectPosition: "right center", accentColor: "var(--accent, #E51B24)" },
+                { src: "/images/slide2.jpg", title: "PRESIONA", subtitle: "Variedad y control", objectPosition: "center", accentColor: "var(--accent, #E51B24)" },
+                { src: "/images/slide3.jpg", title: "DISFRUTA", subtitle: "Productos premium", objectPosition: "center", accentColor: "var(--accent, #E51B24)" }
+              ]}
+              height={"min(80vh, 820px)"}
+              intervalMs={3000}
+            />
+          </div>
         </div>
       </div>
 

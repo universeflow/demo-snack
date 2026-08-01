@@ -1,4 +1,5 @@
 import { motion } from "framer-motion"
+import Carousel from "./carousel"
 
 const NODES = [
   { x: 2, y: 5 }, { x: 8, y: 15 }, { x: 15, y: 8 }, { x: 22, y: 20 },
@@ -19,112 +20,44 @@ const EDGES: [number, number][] = [
   [22,23],[23,24],[19,25],[25,26],[26,27],[27,28],[28,29],[29,24],
   [25,9],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[11,4],
   [12,5],[13,6],[14,7],[15,9],[16,25],[17,26],[30,31],[31,32],
-  [32,33],[33,34],[34,35],[35,36],[30,16],[31,17],[32,39],[33,15],
-  [36,11],[37,27],[38,29],[37,38],[37,30],[38,29],[39,25],[39,15],
+  [32,33],[33,34],[34,35],[35,36],[36,11],[37,27],[38,29],[37,38],
+  [37,30],[38,29],[39,25],[39,15],
 ]
 
 export function HeroSection() {
   return (
-    <section id="hero" className="relative w-full min-h-screen bg-black overflow-hidden flex items-center justify-center px-4 py-20 pt-28">
-      <div
-        className="relative w-full max-w-7xl min-h-[500px] md:min-h-[580px] rounded-2xl overflow-hidden p-8 sm:p-12 md:p-16 flex items-center"
-        style={{
-          background: "linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)",
-          boxShadow: "0 8px 48px rgba(0,0,0,0.6)",
-          border: "1px solid rgba(255,255,255,0.05)"
-        }}
-      >
-        {/* Geometric Network SVG Background */}
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid slice"
-          className="absolute inset-0 w-full h-full opacity-15 pointer-events-none"
-        >
-          {EDGES.map(([a, b], i) => (
-            <line
-              key={i}
-              x1={NODES[a].x}
-              y1={NODES[a].y}
-              x2={NODES[b].x}
-              y2={NODES[b].y}
-              stroke="#E51B24"
-              strokeWidth="0.35"
+    <section id="hero" className="relative w-full min-h-screen text-white overflow-hidden pt-20">
+      {/* Left Background Pattern - Bottom Left Corner */}
+      <div className="absolute bottom-0 left-0 w-80 h-80 opacity-30 -rotate-12 pointer-events-none">
+        <img src="/images/izquierda.png" alt="Left pattern" className="w-full h-full object-cover" />
+      </div>
+
+      {/* Content Container */}
+      <div className="relative z-10 w-full max-w-3xl space-y-10">
+        {/* Main Titles */}
+        {/* ...existing code (títulos y textos) ... */}
+      </div>
+
+      <div className="w-full max-w-7xl mx-auto px-6 py-20">
+        {/* Carousel row: centered, full-width up to max-w-7xl */}
+        <div className="w-full flex justify-center mb-8">
+          <div className="w-full max-w-7xl mx-auto">
+            <Carousel
+              slides={[
+                { src: "/images/slide1.jpg", title: "ELIGE", subtitle: "Encuentra tu opción", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
+                { src: "/images/slide2.jpg", title: "PRESIONA", subtitle: "Servicio rápido", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
+                { src: "/images/slide3.jpg", title: "DISFRUTA", subtitle: "Calidad al instante", accentColor: "var(--accent, #E51B24)", objectPosition: "center" }
+              ]}
+              height={"min(80vh, 820px)"}
+              intervalMs={3000}
             />
-          ))}
-          {NODES.map((n, i) => (
-            <circle key={i} cx={n.x} cy={n.y} r="0.6" fill="#E51B24" />
-          ))}
-        </svg>
-
-        {/* Radial glow background */}
-        <div className="absolute left-[-10%] top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-red-600/10 blur-[100px] pointer-events-none" />
-
-        {/* Content Container */}
-        <div className="relative z-10 w-full max-w-3xl space-y-10">
-          {/* Main Titles */}
-          <div className="space-y-1 select-none">
-            <motion.h1
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white tracking-tight leading-none"
-            >
-              ELIGE
-            </motion.h1>
-            <motion.h1
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white tracking-tight leading-none"
-            >
-              PRESIONA
-            </motion.h1>
-            <motion.h1
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-[#FF2A35] tracking-tight leading-none"
-              style={{
-                textShadow: "0 0 45px rgba(255,42,53,0.55)"
-              }}
-            >
-              DISFRUTA
-            </motion.h1>
           </div>
+        </div>
 
-          {/* Statistics Row */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.45 }}
-            className="flex flex-wrap items-start gap-12 sm:gap-16 pt-4"
-          >
-            {/* Stat 1 */}
-            <div className="space-y-1">
-              <div
-                className="text-5xl sm:text-6xl md:text-7xl font-black text-[#FF2A35] leading-none"
-                style={{ textShadow: "0 0 30px rgba(255,42,53,0.4)" }}
-              >
-                +50
-              </div>
-              <p className="text-sm sm:text-base font-bold text-[#A1A1AA] tracking-wide">
-                Máquinas instaladas
-              </p>
-            </div>
-
-            {/* Stat 2 */}
-            <div className="space-y-1">
-              <div
-                className="text-5xl sm:text-6xl md:text-7xl font-black text-[#FF2A35] leading-none"
-                style={{ textShadow: "0 0 30px rgba(255,42,53,0.4)" }}
-              >
-                99%
-              </div>
-              <p className="text-sm sm:text-base font-bold text-[#A1A1AA] tracking-wide">
-                Disponibilidad
-              </p>
-            </div>
-          </motion.div>
+        {/* grid content (maquina u otros) */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* RIGHT: ...existing code... */}
+          {/* ...existing code... */}
         </div>
       </div>
     </section>

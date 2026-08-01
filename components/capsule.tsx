@@ -35,14 +35,14 @@ export default function Capsule({ client, position, onClick }: CapsuleProps) {
           className="font-mono font-bold self-end"
           style={{ fontSize: isCenter ? 12 : 10, color: "#E51B24" }}
         >
-          {client.code}
+          {client.imagenCliente?.url}
         </span>
 
         {/* Logo Image */}
         <div className="relative flex-1 w-full flex items-center justify-center p-2">
           <img
-            src={client.logoUrl}
-            alt={client.name}
+            src={client.imagenCliente?.url }
+            alt={client.titulo}
             className="max-h-full max-w-full object-contain rounded-lg"
           />
         </div>
@@ -53,13 +53,13 @@ export default function Capsule({ client, position, onClick }: CapsuleProps) {
             className="font-black uppercase tracking-wider text-white truncate"
             style={{ fontSize: isCenter ? 14 : 10 }}
           >
-            {client.name}
+            {client.titulo}
           </h4>
           <p
             className="font-medium text-red-500 truncate"
             style={{ fontSize: isCenter ? 10 : 8 }}
           >
-            {client.tagline}
+            {client.titulo}
           </p>
         </div>
       </div>

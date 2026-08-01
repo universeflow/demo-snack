@@ -1,0 +1,53 @@
+/* Tailwind base */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* background gris medio armonizado */
+:root {
+  --accent: #E51B24;
+  --muted: #A1A1AA;
+  --site-bg: #3f3f46; /* Gris medio elegante unificado */
+}
+
+html, body, #root {
+  min-height: 100vh;
+  background-color: var(--site-bg) !important;
+}
+
+body {
+  background-color: var(--site-bg) !important;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  background-color: transparent !important;
+}
+
+/* SECTION CENTER / WRAP (panel central oscuro, ahora usa --panel-bg) */
+.section-center {
+  display: flex;
+  justify-content: center;
+  padding: 3.5rem 1.25rem;
+}
+
+.section-wrap {
+  width: 100%;
+  max-width: 1120px;
+  background: linear-gradient(180deg, var(--panel-bg) 0%, rgba(14,14,14,0.95) 100%);
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.section-wrap--hero {
+  padding: 14px;
+}
+
+@media (max-width: 640px) {
+  .section-center { padding: 2rem 1rem; }
+  .section-wrap { padding: 18px; border-radius: 10px; }
+}

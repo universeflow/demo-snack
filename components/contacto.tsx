@@ -50,139 +50,170 @@ export function Contacto() {
   }
 
   return (
-    <section id="contacto" className="w-full min-h-screen flex items-center justify-center px-4 py-12" style={{ background: '#0a0a0a' }}>
-      {/* Container */}
-      <div
-        className="relative w-full max-w-5xl rounded-2xl md:rounded-3xl overflow-hidden mx-auto p-6 sm:p-10 md:p-12 border border-red-900/30"
+    <section id="contacto" className="relative py-24 text-white overflow-hidden border-t border-white/10">
+      {/* Outer LED Glowing Chassis */}
+      <motion.div
+        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-2 sm:px-4 border-2 border-red-600/70"
+        animate={{
+          boxShadow: [
+            "0 0 12px rgba(229,27,36,0.25), inset 0 0 8px rgba(229,27,36,0.15)",
+            "0 0 28px rgba(229,27,36,0.65), inset 0 0 16px rgba(229,27,36,0.35)",
+            "0 0 12px rgba(229,27,36,0.25), inset 0 0 8px rgba(229,27,36,0.15)",
+          ],
+          borderColor: [
+            "rgba(229,27,36,0.45)",
+            "rgba(229,27,36,0.85)",
+            "rgba(229,27,36,0.45)",
+          ],
+        }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
         style={{
-          background: 'linear-gradient(145deg, #18181b 0%, #0f0f12 50%, #09090b 100%)',
-          boxShadow: '0 8px 48px rgba(0,0,0,0.8), inset 0 0 20px rgba(225,27,36,0.05)',
+          background: "linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 70%, #1e1e1e 100%)",
+          padding: "3px sm:4px md:6px",
+          maxWidth: "100%",
+          height: "auto",
+          minHeight: "400px",
         }}
       >
-        {/* Geometric SVG Network Pattern Background */}
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid slice"
-          className="absolute inset-0 w-full h-full opacity-15 pointer-events-none"
+        {/* Corner LEDs */}
+        <motion.div
+          className="absolute top-2 left-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.45 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 1.35 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+
+        {/* Inner Content Area */}
+        <div
+          className="relative rounded-2xl overflow-hidden flex flex-col w-full py-8 px-4 md:px-8"
+          style={{
+            background: "#121212",
+            height: "100%",
+            boxShadow: "inset 0 2px 8px rgba(0,0,0,0.8)",
+          }}
         >
-          {EDGES.map(([a, b], i) => (
-            <line
-              key={i}
-              x1={NODES[a].x}
-              y1={NODES[a].y}
-              x2={NODES[b].x}
-              y2={NODES[b].y}
-              stroke="#E51B24"
-              strokeWidth="0.35"
-            />
-          ))}
-          {NODES.map((n, i) => (
-            <circle key={i} cx={n.x} cy={n.y} r="0.6" fill="#E51B24" />
-          ))}
-        </svg>
-
-        {/* Content Area */}
-        <div className="relative z-10 max-w-3xl mx-auto space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-3">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">
-              Ponte en <span className="text-red-600">Contacto</span>
-            </h2>
-            <p className="text-sm sm:text-base md:text-lg font-medium text-white/70 max-w-2xl mx-auto">
-              Nos encantaría escucharte. Completa el formulario y nos comunicaremos pronto.
-            </p>
-          </div>
-
-          {/* Form */}
-          {submitted ? (
-            <div className="py-16 text-center space-y-4 bg-black/40 rounded-2xl border border-red-500/30 p-8">
-              <CheckCircle2 size={56} className="text-red-500 mx-auto animate-bounce" />
-              <h3 className="text-2xl font-bold text-white">¡Mensaje enviado con éxito!</h3>
-              <p className="text-white/70 text-sm max-w-md mx-auto">
-                Gracias por comunicarte con SNACK PRO. Nos pondremos en contacto contigo a la brevedad.
+          {/* Content Area */}
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            {/* Header */}
+            <div className="text-center space-y-3">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">
+                Contáctanos hoy y lleva un punto <span className="text-red-600">SnackPro</span>  a tu empresa.
+              </h2>
+              <p className="text-sm sm:text-base md:text-lg font-medium text-white/70 max-w-2xl mx-auto">
+                Dale a tu equipo el break que se merece.
               </p>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Row 1: Nombre & Correo */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-xs font-black tracking-wider text-white uppercase">
-                    NOMBRE COMPLETO <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="nombre"
-                    required
-                    value={formData.nombre}
-                    onChange={handleChange}
-                    placeholder="Su nombre"
-                    className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 placeholder-zinc-500 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base"
-                  />
-                </div>
 
-                <div className="space-y-2">
-                  <label className="block text-xs font-black tracking-wider text-white uppercase">
-                    CORREO ELECTRÓNICO <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="correo@empresa.cl"
-                    className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 placeholder-zinc-500 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base"
-                  />
-                </div>
+            {/* Form */}
+            {submitted ? (
+              <div className="py-16 text-center space-y-4 bg-black/40 rounded-2xl border border-red-500/30 p-8">
+                <CheckCircle2 size={56} className="text-red-500 mx-auto animate-bounce" />
+                <h3 className="text-2xl font-bold text-white">¡Mensaje enviado con éxito!</h3>
+                <p className="text-white/70 text-sm max-w-md mx-auto">
+                  Gracias por comunicarte con SNACK PRO. Nos pondremos en contacto contigo a la brevedad.
+                </p>
               </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Row 1: Nombre & Correo */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black tracking-wider text-white uppercase">
+                      NOMBRE COMPLETO <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="nombre"
+                      required
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      placeholder="Su nombre"
+                      className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 placeholder-zinc-500 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base"
+                    />
+                  </div>
 
-              {/* Row 2: Asunto */}
-              <div className="space-y-2">
-                <label className="block text-xs font-black tracking-wider text-white uppercase">
-                  ASUNTO
-                </label>
-                <select
-                  name="asunto"
-                  value={formData.asunto}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base appearance-none cursor-pointer"
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black tracking-wider text-white uppercase">
+                      CORREO ELECTRÓNICO <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="correo@empresa.cl"
+                      className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 placeholder-zinc-500 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 2: Asunto */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-black tracking-wider text-white uppercase">
+                    ASUNTO
+                  </label>
+                  <select
+                    name="asunto"
+                    value={formData.asunto}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base appearance-none cursor-pointer"
+                  >
+                    <option value="">Seleccione un asunto</option>
+                    <option value="cotizacion">Cotización</option>
+                    <option value="reclamos">Reclamos</option>
+                    <option value="sugerencias">Sugerencias</option>
+                    <option value="general">Consulta General</option>
+                  </select>
+                </div>
+
+                {/* Row 3: Mensaje */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-black tracking-wider text-white uppercase">
+                    MENSAJE <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="mensaje"
+                    required
+                    rows={5}
+                    value={formData.mensaje}
+                    onChange={handleChange}
+                    placeholder="Describa su consulta o requerimiento..."
+                    className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 placeholder-zinc-500 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base resize-none"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full py-4 rounded-xl bg-[#E51B24] hover:bg-red-600 text-white font-black text-base sm:text-lg tracking-wide transition-all shadow-[0_4px_20px_rgba(229,27,36,0.4)] active:scale-[0.99] flex items-center justify-center gap-2"
                 >
-                  <option value="">Seleccione un asunto</option>
-                  <option value="cotizacion">Cotización de Máquinas</option>
-                  <option value="soporte">Servicio Técnico / Mantenimiento</option>
-                  <option value="general">Consulta General</option>
-                </select>
-              </div>
-
-              {/* Row 3: Mensaje */}
-              <div className="space-y-2">
-                <label className="block text-xs font-black tracking-wider text-white uppercase">
-                  MENSAJE <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="mensaje"
-                  required
-                  rows={5}
-                  value={formData.mensaje}
-                  onChange={handleChange}
-                  placeholder="Describa su consulta o requerimiento..."
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#f0f2f5] text-zinc-900 placeholder-zinc-500 font-medium focus:outline-none focus:ring-2 focus:ring-red-600 transition-all text-sm sm:text-base resize-none"
-                />
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full py-4 rounded-xl bg-[#E51B24] hover:bg-red-600 text-white font-black text-base sm:text-lg tracking-wide transition-all shadow-[0_4px_20px_rgba(229,27,36,0.4)] active:scale-[0.99] flex items-center justify-center gap-2"
-              >
-                <Send size={18} className="rotate-45" />
-                Enviar Mensaje
-              </button>
-            </form>
-          )}
+                  <Send size={18} className="rotate-45" />
+                  Enviar Mensaje
+                </button>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }

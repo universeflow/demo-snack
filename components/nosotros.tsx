@@ -1,134 +1,177 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { ShieldCheck, Zap, Users, Award } from "lucide-react"
-
-const fadeUpVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.15,
-      duration: 0.7,
-      ease: [0.25, 0.4, 0.25, 1],
-    },
-  }),
-}
-
-const features = [
-  {
-    icon: ShieldCheck,
-    title: "Garantía & Confianza",
-    description: "Equipos de última tecnología con mantenimiento y soporte técnico constante.",
-  },
-  {
-    icon: Zap,
-    title: "Servicio Rápido",
-    description: "Abastecimiento continuo y respuesta inmediata ante cualquier requerimiento.",
-  },
-  {
-    icon: Users,
-    title: "Atención Personalizada",
-    description: "Nos adaptamos a las necesidades específicas y flujo de personas de tu empresa.",
-  },
-  {
-    icon: Award,
-    title: "Calidad Premium",
-    description: "Selección rigurosa de productos de alta calidad y marcas reconocidas.",
-  },
-]
+import { getMisionSection, MisionSectionPayload } from "../src/lib/get-nosotros-content"
+import { getVisionSection, VisionSectionPayload } from "../src/lib/get-nosotros-content"
+import { getQuienesSomosSection, QuienesSomosSectionPayload } from "../src/lib/get-nosotros-content"
+import { getNosotrosSection, NosotrosSectionPayload } from "../src/lib/get-nosotros-content"
+import { BlocksRenderer } from "@strapi/blocks-react-renderer"
 
 export function Nosotros() {
+  const [mision, setMision] = useState<MisionSectionPayload | null>(null)
+  const [vision, setVision] = useState<VisionSectionPayload | null>(null);
+  const [quienesSomos, setQuienesSomos] = useState<QuienesSomosSectionPayload | null>(null);
+  const [nosotros, setNosotros] = useState<NosotrosSectionPayload | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    // Ejecutar las 3 llamadas en paralelo (Misión, Visión, Quiénes Somos)
+    Promise.all([getMisionSection(), getVisionSection(), getQuienesSomosSection(), getNosotrosSection()])
+      .then(([misionItems, visionItems, quienesItems, nosotrosItems]) => {
+        if (!mounted) return;
+
+        const misionItem = misionItems && misionItems.length > 0 ? misionItems[0] : null;
+        console.log("mision raw item:", misionItem);
+        setMision(misionItem);
+
+        const visionItem = visionItems && visionItems.length > 0 ? visionItems[0] : null;
+        console.log("vision raw item:", visionItem);
+        setVision(visionItem);
+
+        const quienesItem = quienesItems && quienesItems.length > 0 ? quienesItems[0] : null;
+        console.log("quienesSomos raw item:", quienesItem);
+        setQuienesSomos(quienesItem);
+
+        const nosotrosItem = nosotrosItems && nosotrosItems.length > 0 ? nosotrosItems[0] : null;
+        console.log("nosotros raw item:", nosotrosItem);
+        setNosotros(nosotrosItem);  
+
+      })
+      .catch((error) => {
+        console.error("Error cargando los datos de Nosotros:", error);
+        if (!mounted) return;
+        setMision(null);
+        setVision(null);
+        setQuienesSomos(null);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // datos Mision
+  const misionTitulo = mision?.titulo ?? "Misión"
+  const misionDescripcion = mision?.descripcion
+  // datos Vision
+  const visionTitulo = vision?.titulo ?? "Visión"
+  const visionDescripcion = vision?.descripcion
+
+  // datos Quienes somos
+  const quienesSomosTitulo = quienesSomos?.titulo ?? "Quiénes Somos"
+  const quienesSomosDescripcion = quienesSomos?.descripcion 
+
+  // datos Nosotros
+  const nosotrosDescripcion = nosotros?.descripcion
+
+
+  // helper: detecta bloques u objeto y renderiza BlocksRenderer, si es string devuelve el string
+  const renderBlocksOrText = (content: unknown, fallback: string) => {
+    if (!content) return fallback
+
+    // Si es string, usar tal cual
+    if (typeof content === "string") return content
+
+    // Si parece un arreglo de bloques o un objeto de bloques, intentar renderizar
+    if (Array.isArray(content) || (typeof content === "object" && content !== null)) {
+      try {
+        return <BlocksRenderer content={content as any} />
+      } catch (err) {
+        console.warn("BlocksRenderer falló al renderizar, mostrando texto plano:", err)
+        // Si el objeto contiene texto plano dentro, intentar extraer alguna propiedad string
+        if (typeof (content as any).text === "string") return (content as any).text
+        return fallback
+      }
+    }
+
+    return fallback
+  }
+
   return (
-    <section id="nosotros" className="relative py-24 bg-black text-white overflow-hidden border-t border-white/10">
-      {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none" />
+    <section id="nosotros" className="w-full min-h-screen flex items-center justify-center px-4 py-12">
+      <motion.div
+        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-2 sm:px-4 border-2 border-red-600/70 max-w-7xl"
+        animate={{
+          boxShadow: [
+            "0 0 12px rgba(229,27,36,0.2), inset 0 0 8px rgba(229,27,36,0.08)",
+            "0 0 28px rgba(229,27,36,0.55), inset 0 0 14px rgba(229,27,36,0.2)",
+            "0 0 12px rgba(229,27,36,0.2), inset 0 0 8px rgba(229,27,36,0.08)",
+          ],
+          borderColor: [
+            "rgba(229,27,36,0.45)",
+            "rgba(229,27,36,0.9)",
+            "rgba(229,27,36,0.45)",
+          ]
+        }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          padding: '4px',
+          background: 'linear-gradient(145deg,#121212 0%, #0e0e0e 100%)'
+        }}
+      >
+        {/* corner LEDs */}
+        <motion.span className="absolute top-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        <motion.span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 0.9 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        <motion.span className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 0.45 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        <motion.span className="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 1.35 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Column: Text & Values */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="space-y-8"
-          >
-            <div className="space-y-4">
-              <motion.span
-                custom={0}
-                variants={fadeUpVariants}
-                className="inline-block text-red-500 font-mono text-sm tracking-[0.25em] uppercase font-bold"
-              >
-                SOBRE NOSOTROS
-              </motion.span>
-              <motion.h2
-                custom={1}
-                variants={fadeUpVariants}
-                className="text-4xl md:text-5xl font-black tracking-tight leading-tight"
-              >
-                Revolucionando la experiencia de <span className="text-red-500">vending</span> para tu empresa
-              </motion.h2>
-            </div>
+        <div className="relative rounded-xl overflow-hidden p-8 md:p-12 bg-[#121212]">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">NOSOTROS</h2>
+            <div className="mx-auto mt-3 w-20 h-1 bg-red-600 rounded" />
+          </div>
 
-            <motion.p
-              custom={2}
-              variants={fadeUpVariants}
-              className="text-white/70 text-base md:text-lg leading-relaxed"
-            >
-              En <strong className="text-white font-bold">SNACK PRO</strong> nos dedicamos a transformar la pausa diaria en una experiencia eficiente, moderna y conveniente. Proveemos soluciones automáticas de dispensación con tecnología de punta y un servicio integral de gestión.
-            </motion.p>
+          {/* Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch"> 
+  {/* 👇 Agregamos 'items-stretch' al grid padre para que todas las tarjetas tengan la misma altura */}
 
-            {/* Feature Grid */}
-            <div className="grid sm:grid-cols-2 gap-6 pt-4">
-              {features.map((feature, index) => {
-                const Icon = feature.icon
-                return (
-                  <motion.div
-                    key={feature.title}
-                    custom={3 + index * 0.5}
-                    variants={fadeUpVariants}
-                    className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/40 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-3 text-red-500">
-                      <Icon size={20} />
-                    </div>
-                    <h3 className="font-bold text-white text-base mb-1">{feature.title}</h3>
-                    <p className="text-xs text-white/60 leading-relaxed">{feature.description}</p>
-                  </motion.div>
-                )
-              })}
-            </div>
-          </motion.div>
+  {/* Misión: contenedor relativo */}
+  {/* 👇 Agregamos 'relative' y 'pb-24' (padding inferior para no tapar el texto) al <article> */}
+  <article className="relative rounded-xl border border-red-500/20 p-6 bg-black/40 pb-24">
+        <h3 className="text-xl font-bold text-red-500 mb-3">
+          {typeof misionTitulo === "string"
+            ? misionTitulo
+            : <BlocksRenderer content={misionTitulo as any} />
+          }
+        </h3>
 
-          {/* Right Column: Visual Banner */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative flex justify-center"
-          >
-            <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden border border-white/15 bg-gradient-to-b from-white/10 to-transparent p-4 flex flex-col justify-between shadow-2xl">
-              <div className="relative w-full h-3/4 rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center">
-                <img
-                  src="/images/demo.png"
-                  alt="Máquina Vending SNACK Pro"
-                  className="max-h-full max-w-full object-contain p-4 filter drop-shadow-[0_10px_20px_rgba(229,27,36,0.3)]"
-                />
-              </div>
+        <p className="text-sm text-white/80 leading-relaxed">
+          {renderBlocksOrText(misionDescripcion, "Proporcionar máquinas dispensadoras de última generación...")}
+        </p>
 
-              <div className="p-4 text-center bg-black/40 rounded-2xl border border-white/10 backdrop-blur-md">
-                <div className="text-2xl font-black tracking-wider text-white">
-                  <span className="text-red-500">SNACK</span> PRO
-                </div>
-                <div className="text-xs text-white/60 font-mono tracking-widest uppercase mt-1">
-                  Innovación & Calidad en Vending
-                </div>
-              </div>
-            </div>
-          </motion.div>
+        {/* 👇 Convertimos este div en absoluto: 'absolute', 'bottom-6', 'left-6', 'right-6' */}
+        <div className="absolute bottom-6 left-6 right-6 rounded-md border border-red-800/30 p-3 bg-black/30 text-red-400 font-mono text-xs">
+          • SNACK PRO
         </div>
-      </div>
+    </article>
+
+  {/* Visión: contenedor relativo */}
+  {/* 👇 Repetimos: 'relative' y 'pb-24' al <article> */}
+      <article className="relative rounded-xl border border-red-500/20 p-6 bg-black/40 pb-24">
+          <h3 className="text-xl font-bold text-red-500 mb-3 ">
+            {typeof visionTitulo === "string"
+              ? visionTitulo
+              : <BlocksRenderer content={visionTitulo as any} />
+            }
+          </h3>
+          <p className="text-sm text-white/80 leading-relaxed">
+            {renderBlocksOrText(visionDescripcion, "")}
+          </p>
+
+          {/* 👇 Repetimos: 'absolute', 'bottom-6', 'left-6', 'right-6' */}
+          <div className="absolute bottom-6 left-6 right-6 rounded-md border border-red-800/30 p-3 bg-black/30 text-red-400 font-mono text-xs">
+            • SNACK PRO
+          </div>
+      </article>
+        </div>
+
+          {/* Body text area (texto largo de foto) */}
+          <div className="mt-8 prose prose-invert max-w-none text-sm text-white/80 text-justify">
+            {renderBlocksOrText(nosotrosDescripcion, "")}
+          </div>
+        </div>
+      </motion.div>
     </section>
   )
 }
