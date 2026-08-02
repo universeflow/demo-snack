@@ -25,13 +25,16 @@ export function Navigation({ activeSection, onNavigate }: NavProps) {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[999] bg-black border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-[999] bg-[#2a2a2a]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="relative flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="#inicio" onClick={(e) => handleClick(e, "inicio")} className="flex items-center font-black text-2xl tracking-tight z-10">
-            <span className="text-red-600">Snack</span>
-            <span className="text-white">Pro</span>
+          <a href="#inicio" onClick={(e) => handleClick(e, "inicio")} className="flex items-center z-10">
+            <img
+              src="/images/logo.png"
+              alt="SnackPro Logo"
+              className="h-[85px] md:h-[105px] w-auto object-contain py-1"
+            />
           </a>
 
           {/* Desktop Navigation - Centered */}
