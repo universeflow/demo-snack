@@ -1,6 +1,5 @@
 import { unstable_SwitchBubbleInputProps } from "@radix-ui/react-switch";
 import { getStrapiMedia, query } from "./strapi";
-import { extractImageUrl } from "./get-nosotros-content";
 
 export type InformacionClientesPayload = {
   id?: number
@@ -51,7 +50,7 @@ export async function getClientesSnackPro(isDraft = false): Promise<InformacionC
  const elementos = Array.isArray(res?.data) ? res.data : [];
     if (!elementos.length) return [];
 
-    // 🔴 CAMBIO AQUÍ: Usamos import.meta.env en lugar de process.env
+    
     const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
 
     return elementos.map((registroBruto) => {

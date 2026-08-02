@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import Carousel from "./carousel"
+import { getCarruselSnackPro } from "../src/lib/get-carrusel-content"
 
 const NODES = [
   { x: 2, y: 5 }, { x: 8, y: 15 }, { x: 15, y: 8 }, { x: 22, y: 20 },
@@ -24,7 +26,41 @@ const EDGES: [number, number][] = [
   [37,30],[38,29],[39,25],[39,15],
 ]
 
+const DEFAULT_HERO_SLIDES = [
+  { src: "/images/slide1.jpg", title: "ELIGE", subtitle: "Encuentra tu opción", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
+  { src: "/images/slide2.jpg", title: "PRESIONA", subtitle: "Servicio rápido", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
+  { src: "/images/slide3.jpg", title: "DISFRUTA", subtitle: "Calidad al instante", accentColor: "var(--accent, #E51B24)", objectPosition: "center" }
+]
+
 export function HeroSection() {
+  const [slides, setSlides] = useState<any[]>(DEFAULT_HERO_SLIDES)
+
+  useEffect(() => {
+    let mounted = true
+    async function fetchSlides() {
+      try {
+        const data = await getCarruselSnackPro()
+        if (mounted && data && data.length > 0) {
+          setSlides(
+            data.map((item) => ({
+              src: item.url || "/images/slide1.jpg",
+              title: item.titulo_blanco ?? "",
+              subtitle: item.titulo_rojo ?? "",
+              accentColor: "var(--accent, #E51B24)",
+              objectPosition: "center",
+            }))
+          )
+        }
+      } catch (err) {
+        console.error("Error obteniendo carrusel en HeroSection:", err)
+      }
+    }
+    fetchSlides()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
   return (
     <section id="hero" className="relative w-full min-h-screen text-white overflow-hidden pt-20">
       {/* Left Background Pattern - Bottom Left Corner */}
@@ -43,11 +79,7 @@ export function HeroSection() {
         <div className="w-full flex justify-center mb-8">
           <div className="w-full max-w-7xl mx-auto">
             <Carousel
-              slides={[
-                { src: "/images/slide1.jpg", title: "ELIGE", subtitle: "Encuentra tu opción", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
-                { src: "/images/slide2.jpg", title: "PRESIONA", subtitle: "Servicio rápido", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
-                { src: "/images/slide3.jpg", title: "DISFRUTA", subtitle: "Calidad al instante", accentColor: "var(--accent, #E51B24)", objectPosition: "center" }
-              ]}
+              slides={slides}
               height={"min(80vh, 820px)"}
               intervalMs={3000}
             />

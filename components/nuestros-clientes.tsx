@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
-import { clients, updateClients, parseClientsFromStrapi, Client } from './data'
+import { parseClientsFromStrapi, Client } from './data'
 import Numpad from './numpad'
-import Capsule from './capsule'
 import { motion } from "framer-motion"
 import { InformacionClientesPayload, getClientesSnackPro } from '../src/lib/get-clientes-content'
 
 const AUTOPLAY_MS = 5000
 
-// URL base de Strapi dinámica (usa variable de entorno en prod o cae al servidor activo/localhost)
+// URL base de Strapi dinámica
 const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337'
 
 function GeometricPattern({ opacity = 0.06 }: { opacity?: number }) {
@@ -35,28 +34,36 @@ interface HeroSectionProps {
 }
 
 export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionProps) {
+  const [clients, setClients] = useState<Client[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoplay, setIsAutoplay] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
 
   const totalClients = clients.length
 
-  // Helper para construir la URL correcta según venga de Strapi (relativa o absoluta)
+  // Helper para obtener la URL de la imagen
   const getImageUrl = (client: Client | undefined): string | undefined => {
     if (!client?.imagenCliente) return undefined
-    
-    let rawUrl = typeof client.imagenCliente === 'string' 
-      ? client.imagenCliente 
-      : (client.imagenCliente as { url?: string })?.url
+
+    const img = client.imagenCliente
+    let rawUrl: string | undefined
+
+    // Si es string directo
+    if (typeof img === 'string') {
+      rawUrl = img
+    } 
+    // Si es objeto con propiedad url
+    else if (img && typeof img === 'object' && 'url' in img) {
+      rawUrl = img.url
+    }
 
     if (!rawUrl) return undefined
 
-    // Si la URL es relativa (empieza con /), le pegamos la URL base de Strapi
-    if (rawUrl.startsWith('/')) {
-      return `${STRAPI_BASE_URL}${rawUrl}`
-    }
+    // Si ya es URL completa, retornar
+    if (rawUrl.startsWith('http')) return rawUrl
 
-    return rawUrl
+    // Agregar prefijo de Strapi
+    return `${STRAPI_BASE_URL}${rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl}`
   }
 
   // Cargar clientes de Strapi
@@ -69,8 +76,9 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
         if (!mounted) return
 
         const parsedClients = parseClientsFromStrapi(resp)
+        
         if (parsedClients.length > 0) {
-          updateClients(parsedClients)
+          setClients(parsedClients)
         }
       } catch (err) {
         console.error('Error fetching clients from Strapi:', err)
@@ -79,7 +87,7 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
 
     if (strapiSlides && strapiSlides.length > 0) {
       const parsedClients = parseClientsFromStrapi({ data: strapiSlides })
-      updateClients(parsedClients)
+      setClients(parsedClients)
     } else {
       loadClients()
     }
@@ -211,7 +219,7 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
               </p>
             </div>
 
-            {/* Carrusel con imágenes más grandes */}
+            {/* Carrusel */}
             <div
               className="flex items-center justify-center gap-4 md:gap-10 w-full overflow-hidden py-8"
               role="region"
@@ -234,7 +242,7 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
                 <ChevronLeft size={28} />
               </button>
 
-              {/* 3 Cápsulas/Imágenes - más grandes */}
+              {/* 3 Contenedores de Imágenes */}
               <div className="flex items-end justify-center gap-6 md:gap-10 overflow-hidden">
                 {/* Izquierda */}
                 <button
@@ -254,7 +262,7 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
                   )}
                 </button>
 
-                {/* Central (Activa) - más grande */}
+                {/* Central (Activa) */}
                 <div
                   role="group"
                   aria-label={`Cliente ${currentSlide + 1} de ${totalClients}: ${currentClient?.titulo ?? ''}`}
@@ -372,7 +380,12 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
             />
 
             {totalClients > 0 && (
-              <Numpad activeIndex={currentSlide} total={totalClients} onSelect={(i: number) => goToSlide(i)} />
+              <Numpad 
+                activeIndex={currentSlide} 
+                total={totalClients} 
+                clients={clients}
+                onSelect={(i: number) => goToSlide(i)} 
+              />
             )}
           </div>
         </div>

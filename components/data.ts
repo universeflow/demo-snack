@@ -2,22 +2,13 @@ export interface Client {
   id: number;
   bgColor?: string;
   titulo?: string;
-  imagenCliente?: { // Para compatibilidad con Strapi
+  imagenCliente?: {
     url: string;
     alternativeText?: string | null;
   } | null;
 }
 
 export const GRID_COLS = 5;
-
-// Array mutable que se actualiza con datos de Strapi
-export let clients: Client[] = [];
-
-// Función para actualizar el array de clients desde componentes
-export function updateClients(newClients: Client[]) {
-  clients.length = 0;
-  clients.push(...newClients);
-}
 
 // Mapea la respuesta de Strapi (v3/v4) a Client[]
 export function parseClientsFromStrapi(response: any): Client[] {
@@ -55,7 +46,7 @@ export function parseClientsFromStrapi(response: any): Client[] {
         id,
         bgColor,
         titulo,
-        imagenCliente: imageField,
+        imagenCliente: extractImageFromStrapi(imageField),
       } as Client;
       
       console.log(`Cliente ${id} parseado:`, parsedClient);
@@ -69,15 +60,24 @@ function extractImageFromStrapi(field: any): { url: string; alternativeText?: st
   
   if (!field) return null;
 
-  // Si field es un array directamente (común en Strapi v4)
+  // 1. CASO NUEVO: Si field ya es una URL en texto (String)
+  if (typeof field === 'string') {
+    return { url: field, alternativeText: null };
+  }
+
+  // 2. Si field es un array directamente (común en Strapi v4)
   if (Array.isArray(field)) {
     console.log('Field is array, length:', field.length);
     if (field.length === 0) return null;
     field = field[0]; // tomar el primer elemento
-    console.log('Using first element:', field);
+    
+    // Si el elemento del array es solo el string de la URL
+    if (typeof field === 'string') {
+      return { url: field, alternativeText: null };
+    }
   }
 
-  // Si Strapi v4: field.data puede ser objeto o array
+  // 3. Si Strapi v4: field.data puede ser objeto o array
   let media = field;
   if (field.data) {
     media = field.data;
@@ -86,7 +86,12 @@ function extractImageFromStrapi(field: any): { url: string; alternativeText?: st
   
   if (!media) return null;
 
-  // El media puede tener la URL directamente o en attributes
+  // Si media termina siendo un string
+  if (typeof media === 'string') {
+    return { url: media, alternativeText: null };
+  }
+
+  // 4. El media tiene la URL en un objeto o attributes
   const attrs = media.attributes ?? media;
   
   console.log('Media attributes:', attrs);
@@ -107,6 +112,3 @@ function extractImageFromStrapi(field: any): { url: string; alternativeText?: st
   const alternativeText = attrs.alternativeText ?? attrs.alternative_text ?? null;
   return { url, alternativeText };
 }
-
-// Ejemplo de uso (en tu componente):
-// const clientsList = parseClientsFromStrapi(apiResponseFromStrapi);

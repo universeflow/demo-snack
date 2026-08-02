@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { InformacionCarruselPayload, getCarruselSnackPro } from '../src/lib/get-carrusel-content'
 
 type Slide = {
-  src: string
+  src?: string
+  url?: string // Adaptabilidad automática para Strapi getCarruselSnackPro()
   title?: string
+  titulo_blanco?: string // Adaptabilidad automática para Strapi
   subtitle?: string
+  titulo_rojo?: string // Adaptabilidad automática para Strapi
   accentColor?: string
   objectPosition?: string
 }
@@ -15,12 +19,92 @@ type CarouselProps = {
   intervalMs?: number
 }
 
+// 1. COMPONENTE SOLO PARA EL CUADRADO DEL TEXTO
+export function TextCard({ slide }: { slide?: Slide }) {
+  if (!slide) return null;
+
+  const titleText = slide.title ?? slide.titulo_blanco;
+  const subtitleText = slide.subtitle ?? slide.titulo_rojo;
+
+  if (!titleText && !subtitleText) return null;
+
+  return (
+    <motion.div
+      key={`text-box-${titleText}`}
+      initial={{ y: 15, opacity: 0, scale: 0.95 }}
+      animate={{ y: 0, opacity: 1, scale: 1 }}
+      exit={{ y: -15, opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.6, ease: [0.22, 0.9, 0.22, 1] }}
+      className="p-5 rounded-xl backdrop-blur-sm relative overflow-hidden w-full"
+      style={{
+        maxWidth: "480px",
+        background: "linear-gradient(135deg, rgba(18,18,18,0.95) 0%, rgba(12,12,12,0.98) 100%)",
+        border: `2px solid ${slide.accentColor ?? "#E51B24"}`,
+        boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 20px ${slide.accentColor ?? "rgba(229,27,36,0.3)"}`,
+      }}
+    >
+      {/* Luces LEDs en las esquinas */}
+      <motion.span className="absolute top-2.5 left-2.5 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+      <motion.span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 0.8 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+      <motion.span className="absolute bottom-2.5 left-2.5 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 0.4 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+      <motion.span className="absolute bottom-2.5 right-2.5 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 1.2 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+
+      {/* Brillo de fondo */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        animate={{
+          background: [
+            `radial-gradient(circle at 0% 0%, ${slide.accentColor ?? "rgba(229,27,36,0.2)"} 0%, transparent 50%)`,
+            `radial-gradient(circle at 100% 100%, ${slide.accentColor ?? "rgba(229,27,36,0.2)"} 0%, transparent 50%)`,
+            `radial-gradient(circle at 0% 0%, ${slide.accentColor ?? "rgba(229,27,36,0.2)"} 0%, transparent 50%)`,
+          ],
+        }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Subtítulo */}
+      {subtitleText && (
+        <div
+          className="text-xs md:text-sm font-bold font-mono tracking-widest mb-1.5 uppercase"
+          style={{ color: slide.accentColor ?? "#E51B24", opacity: 0.95 }}
+        >
+          {subtitleText}
+        </div>
+      )}
+
+      {/* Título Principal */}
+      {titleText && (
+        <h3
+          className="font-black text-xl md:text-2xl leading-tight text-white"
+          style={{
+            textShadow: `0 4px 16px ${slide.accentColor ?? "rgba(229,27,36,0.4)"}`,
+          }}
+        >
+          {titleText}
+        </h3>
+      )}
+
+      {/* Línea decorativa roja inferior */}
+      <motion.div
+        className="mt-3 h-1 rounded-full"
+        style={{
+          background: `linear-gradient(90deg, ${slide.accentColor ?? "#E51B24"} 0%, transparent 100%)`,
+        }}
+        animate={{ scaleX: [0.3, 1, 0.3] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </motion.div>
+  )
+}
+
+// 2. COMPONENTE PRINCIPAL CARRUSEL
 export default function Carousel({ slides, height = "min(80vh, 820px)", intervalMs = 3000 }: CarouselProps) {
   const [index, setIndex] = useState(0)
   const [dir, setDir] = useState(1)
   const mounted = useRef(true)
 
   useEffect(() => {
+    if (!slides.length) return
     mounted.current = true
     const id = setInterval(() => {
       setDir(1)
@@ -32,12 +116,22 @@ export default function Carousel({ slides, height = "min(80vh, 820px)", interval
     }
   }, [slides.length, intervalMs])
 
+  if (!slides || slides.length === 0) return null
+
+  const currentSlide = slides[index]
+  const imageSrc = currentSlide.src ?? currentSlide.url ?? ""
+  const titleText = currentSlide.title ?? currentSlide.titulo_blanco
+
   const enter = (d: number) => ({ x: d > 0 ? 80 : -80, opacity: 0, rotateY: d > 0 ? 16 : -16, scale: 0.98 })
   const center = { x: 0, opacity: 1, rotateY: 0, scale: 1 }
   const exit = (d: number) => ({ x: d > 0 ? -80 : 80, opacity: 0, rotateY: d > 0 ? -16 : 16, scale: 0.98 })
 
   return (
-    <div className="w-full flex flex-col items-center justify-center" style={{ perspective: 1600 }}>
+    <div className="w-full flex flex-col items-center justify-center gap-4" style={{ perspective: 1600 }}>
+      {/* Muestra la tarjeta del texto */}
+      <TextCard slide={currentSlide} />
+
+      {/* MARCO GRANDE PRINCIPAL CON LA IMAGEN */}
       <motion.div
         className="relative w-full mx-auto rounded-xl overflow-hidden"
         animate={{
@@ -56,16 +150,16 @@ export default function Carousel({ slides, height = "min(80vh, 820px)", interval
           background: "linear-gradient(180deg, rgba(0,0,0,0.04), transparent)",
         }}
       >
-        {/* corner LEDs */}
-        <motion.span className="absolute top-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.6 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
-        <motion.span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 0.8 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
-        <motion.span className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 0.4 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
-        <motion.span className="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 1.2 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        {/* Luces LEDs de las esquinas */}
+        <motion.span className="absolute top-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        <motion.span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 0.8 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        <motion.span className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 0.4 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        <motion.span className="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25, 1, 0.25] }} transition={{ repeat: Infinity, duration: 1.6, delay: 1.2 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
 
         <div className="relative w-full h-full rounded-md overflow-hidden bg-black/10 flex items-center justify-center">
           <AnimatePresence initial={false} custom={dir}>
             <motion.div
-              key={slides[index].src}
+              key={imageSrc}
               custom={dir}
               variants={{ enter, center, exit }}
               initial="enter"
@@ -75,70 +169,40 @@ export default function Carousel({ slides, height = "min(80vh, 820px)", interval
               style={{ height: "100%", transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
               className="absolute inset-0 flex items-center justify-center"
             >
-              {/* image wrapper */}
+              {/* Imagen Principal Grande */}
               <div className="w-full h-full flex items-center justify-center px-8">
-                <img
-                  src={slides[index].src}
-                  alt={slides[index].title ?? `slide-${index + 1}`}
-                  className="block"
-                  style={{
-                    width: "92%",
-                    height: "92%",
-                    objectFit: "contain",
-                    objectPosition: slides[index].objectPosition ?? "center",
-                    opacity: 0.48,
-                    filter: "saturate(0.98) contrast(0.95)",
-                    borderRadius: 10,
-                    background: "rgba(0,0,0,0.04)",
-                  }}
-                />
+                {imageSrc && (
+                  <img
+                    src={imageSrc}
+                    alt={titleText ?? `slide-${index + 1}`}
+                    className="block"
+                    style={{
+                      width: "92%",
+                      height: "92%",
+                      objectFit: "contain",
+                      objectPosition: currentSlide.objectPosition ?? "center",
+                      opacity: 0.85,
+                      filter: "saturate(0.98) contrast(0.95)",
+                      borderRadius: 10,
+                      background: "rgba(0,0,0,0.04)",
+                    }}
+                  />
+                )}
               </div>
 
-              {/* overlay */}
+              {/* Capa de sombra */}
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
                   background:
-                    "linear-gradient(180deg, rgba(16,18,20,0.12) 0%, rgba(12,14,16,0.55) 65%, rgba(8,9,10,0.65) 100%)",
+                    "linear-gradient(180deg, rgba(16,18,20,0.12) 0%, rgba(12,14,16,0.35) 65%, rgba(8,9,10,0.55) 100%)",
                 }}
               />
-
-              {/* animated caption */}
-              {(slides[index].title || slides[index].subtitle) && (
-                <motion.div
-                  key={`cap-${index}`}
-                  initial={{ y: 12, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 8, opacity: 0 }}
-                  transition={{ duration: 0.6, ease: [0.22, 0.9, 0.22, 1], delay: 0.18 }}
-                  className="absolute left-6 right-6 bottom-6 md:left-12 md:right-auto md:bottom-12 max-w-[60%] z-30"
-                >
-                  {slides[index].subtitle && (
-                    <div
-                      className="text-lg md:text-xl font-bold font-mono tracking-widest mb-3"
-                      style={{ color: slides[index].accentColor ?? "var(--accent, #E51B24)", opacity: 0.98 }}
-                    >
-                      {slides[index].subtitle}
-                    </div>
-                  )}
-                  {slides[index].title && (
-                    <h3
-                      className="font-black text-3xl md:text-5xl leading-tight"
-                      style={{
-                        color: "#fff",
-                        textShadow: `0 10px 36px ${slides[index].accentColor ?? "rgba(229,27,36,0.45)"}`,
-                      }}
-                    >
-                      {slides[index].title}
-                    </h3>
-                  )}
-                </motion.div>
-              )}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* dots */}
+        {/* Puntos del carrusel */}
         <div className="absolute left-1/2 -translate-x-1/2 bottom-4 flex gap-2 z-20">
           {slides.map((_, i) => (
             <button
