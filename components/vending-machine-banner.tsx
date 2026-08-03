@@ -158,23 +158,13 @@ export default function VendingMachineBanner() {
 
       {/* ── Layout grid ── */}
       <div
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center', // Centrado completo
-          padding: '40px 56px',
-          minHeight: 480,
-          gap: 24,
-        }}
+        className="relative z-10 flex items-center justify-center p-3 sm:p-6 md:p-10 min-h-[360px] sm:min-h-[480px] gap-4 sm:gap-6"
       >
         {/* CENTERED HERO AREA: carrusel dinámico */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="w-full max-w-7xl mx-auto px-6">
+        <div className="flex-1 flex items-center justify-center w-full">
+          <div className="w-full max-w-7xl mx-auto px-1 sm:px-4">
             <Carousel
               slides={slides}
-              height={"min(80vh, 820px)"}
               intervalMs={3000}
             />
           </div>

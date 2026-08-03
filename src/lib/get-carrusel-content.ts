@@ -49,7 +49,9 @@ export async function getCarruselSnackPro(isDraft = false): Promise<InformacionC
 
       let finalImageUrl: string | null = null;
       if (rawUrl) {
-        finalImageUrl = rawUrl.startsWith('http') ? rawUrl : `${STRAPI_URL}${rawUrl}`;
+        finalImageUrl = rawUrl.startsWith('http') || rawUrl.startsWith('/images/') || rawUrl.startsWith('/clients/') || rawUrl.startsWith('data:')
+          ? rawUrl
+          : `${STRAPI_URL}${rawUrl.startsWith('/') ? '' : '/'}${rawUrl}`;
       }
 
       return {

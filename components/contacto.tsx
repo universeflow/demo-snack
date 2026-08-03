@@ -23,7 +23,7 @@ export function Contacto() {
 	})
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
 	) => {
 		setFormData({
 			...formData,
@@ -122,7 +122,7 @@ export function Contacto() {
 				/>
 
 				<div
-					className="relative rounded-2xl overflow-hidden py-12 px-6 md:px-12 w-full"
+					className="relative rounded-2xl overflow-hidden py-8 sm:py-12 px-4 sm:px-6 md:px-12 w-full"
 					style={{
 						background: '#121212',
 						height: '100%',
@@ -176,7 +176,7 @@ export function Contacto() {
 							</div>
 
 							{/* Formulario */}
-							<form onSubmit={handleSubmit} className="space-y-6 bg-neutral-900/60 p-8 rounded-2xl border border-white/10">
+							<form onSubmit={handleSubmit} className="space-y-6 bg-neutral-900/60 p-4 sm:p-8 rounded-2xl border border-white/10">
 								{status.success && (
 									<div className="p-4 bg-green-900/30 border border-green-500/50 rounded-xl flex items-center gap-3 text-green-400">
 										<CheckCircle size={20} />

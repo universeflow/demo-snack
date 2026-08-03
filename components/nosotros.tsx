@@ -21,19 +21,15 @@ export function Nosotros() {
         if (!mounted) return;
 
         const misionItem = misionItems && misionItems.length > 0 ? misionItems[0] : null;
-        console.log("mision raw item:", misionItem);
         setMision(misionItem);
 
         const visionItem = visionItems && visionItems.length > 0 ? visionItems[0] : null;
-        console.log("vision raw item:", visionItem);
         setVision(visionItem);
 
         const quienesItem = quienesItems && quienesItems.length > 0 ? quienesItems[0] : null;
-        console.log("quienesSomos raw item:", quienesItem);
         setQuienesSomos(quienesItem);
 
         const nosotrosItem = nosotrosItems && nosotrosItems.length > 0 ? nosotrosItems[0] : null;
-        console.log("nosotros raw item:", nosotrosItem);
         setNosotros(nosotrosItem);  
 
       })
@@ -115,11 +111,11 @@ export function Nosotros() {
         <motion.span className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 0.45 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
         <motion.span className="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 1.35 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
 
-        <div className="relative rounded-xl overflow-hidden p-8 md:p-12 bg-[#121212]">
+        <div className="relative rounded-xl overflow-hidden p-4 sm:p-8 md:p-12 bg-[#121212]">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">NOSOTROS</h2>
-            <div className="mx-auto mt-3 w-20 h-1 bg-red-600 rounded" />
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white">NOSOTROS</h2>
+            <div className="mx-auto mt-3 w-16 sm:w-20 h-1 bg-red-600 rounded" />
           </div>
 
           {/* Cards */}

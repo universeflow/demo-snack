@@ -99,7 +99,6 @@ useEffect(() => {
 		.then((items) => {
 			if (items && items.length > 0) {
 				const servicioItem = items[0];
-				console.log("servicio raw item:", servicioItem);
 				setServicio(servicioItem);
 			} else {
 				setServicio(null);

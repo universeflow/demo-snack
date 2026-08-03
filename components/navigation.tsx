@@ -31,9 +31,9 @@ export function Navigation({ activeSection, onNavigate }: NavProps) {
           {/* Logo */}
           <a href="#inicio" onClick={(e) => handleClick(e, "inicio")} className="flex items-center z-10">
             <img
-              src="/images/logo.png"
+              src="https://admin.snackpro.cl/logo.png"
               alt="SnackPro Logo"
-              className="h-[85px] md:h-[105px] w-auto object-contain py-1"
+              className="h-[52px] sm:h-[70px] md:h-[95px] w-auto object-contain py-1"
             />
           </a>
 

@@ -10,6 +10,31 @@ export interface Client {
 
 export const GRID_COLS = 5;
 
+export const DEFAULT_CLIENTS: Client[] = [
+  { id: 1, titulo: 'Terravista', imagenCliente: { url: '/clients/terravista.png' } },
+  { id: 2, titulo: 'Cúpula', imagenCliente: { url: '/clients/cupula.png' } },
+  { id: 3, titulo: 'Veloxis', imagenCliente: { url: '/clients/veloxis.png' } },
+  { id: 4, titulo: 'Sync', imagenCliente: { url: '/clients/sync.png' } },
+  { id: 5, titulo: 'Aristo', imagenCliente: { url: '/clients/aristo.png' } },
+];
+
+const STRAPI_BASE_URL = (import.meta as any).env?.VITE_STRAPI_URL || 'http://localhost:1337';
+
+// Convierte una URL relativa de Strapi en absoluta
+function toAbsoluteUrl(url: string): string {
+  if (!url) return url;
+  if (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('/clients/') ||
+    url.startsWith('/images/') ||
+    url.startsWith('data:')
+  ) {
+    return url;
+  }
+  return `${STRAPI_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
 // Mapea la respuesta de Strapi (v3/v4) a Client[]
 export function parseClientsFromStrapi(response: any): Client[] {
   if (!response) return [];
@@ -26,8 +51,6 @@ export function parseClientsFromStrapi(response: any): Client[] {
     items = [];
   }
 
-  console.log('parseClientsFromStrapi - items to parse:', items);
-
   return items
     .filter((item: any) => item != null)
     .map((item: any) => {
@@ -40,8 +63,6 @@ export function parseClientsFromStrapi(response: any): Client[] {
       const titulo = item.titulo ?? item.title ?? item.nombre ?? item.attributes?.titulo ?? '';
       const bgColor = item.bgColor ?? item.colorFondo ?? item.attributes?.bgColor ?? '#ffffff';
       
-      console.log(`Cliente ${id} - imageField DIRECTO:`, imageField);
-      
       const parsedClient = {
         id,
         bgColor,
@@ -49,31 +70,26 @@ export function parseClientsFromStrapi(response: any): Client[] {
         imagenCliente: extractImageFromStrapi(imageField),
       } as Client;
       
-      console.log(`Cliente ${id} parseado:`, parsedClient);
-      
       return parsedClient;
     });
 }
 
 function extractImageFromStrapi(field: any): { url: string; alternativeText?: string | null } | null {
-  console.log('extractImageFromStrapi - input field:', field);
-  
   if (!field) return null;
 
   // 1. CASO NUEVO: Si field ya es una URL en texto (String)
   if (typeof field === 'string') {
-    return { url: field, alternativeText: null };
+    return { url: toAbsoluteUrl(field), alternativeText: null };
   }
 
   // 2. Si field es un array directamente (común en Strapi v4)
   if (Array.isArray(field)) {
-    console.log('Field is array, length:', field.length);
     if (field.length === 0) return null;
     field = field[0]; // tomar el primer elemento
     
     // Si el elemento del array es solo el string de la URL
     if (typeof field === 'string') {
-      return { url: field, alternativeText: null };
+      return { url: toAbsoluteUrl(field), alternativeText: null };
     }
   }
 
@@ -88,13 +104,11 @@ function extractImageFromStrapi(field: any): { url: string; alternativeText?: st
 
   // Si media termina siendo un string
   if (typeof media === 'string') {
-    return { url: media, alternativeText: null };
+    return { url: toAbsoluteUrl(media), alternativeText: null };
   }
 
   // 4. El media tiene la URL en un objeto o attributes
   const attrs = media.attributes ?? media;
-  
-  console.log('Media attributes:', attrs);
   
   // buscar url en varios posibles lugares
   const url =
@@ -105,10 +119,8 @@ function extractImageFromStrapi(field: any): { url: string; alternativeText?: st
     media.url || // url directo en root
     null;
   
-  console.log('Extracted URL:', url);
-  
   if (!url) return null;
 
   const alternativeText = attrs.alternativeText ?? attrs.alternative_text ?? null;
-  return { url, alternativeText };
+  return { url: toAbsoluteUrl(url), alternativeText };
 }

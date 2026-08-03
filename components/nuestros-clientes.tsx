@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
-import { parseClientsFromStrapi, Client } from './data'
+import { parseClientsFromStrapi, Client, DEFAULT_CLIENTS } from './data'
 import Numpad from './numpad'
 import { motion } from "framer-motion"
 import { InformacionClientesPayload, getClientesSnackPro } from '../src/lib/get-clientes-content'
@@ -34,7 +34,7 @@ interface HeroSectionProps {
 }
 
 export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionProps) {
-  const [clients, setClients] = useState<Client[]>([])
+  const [clients, setClients] = useState<Client[]>(DEFAULT_CLIENTS)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoplay, setIsAutoplay] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
@@ -59,14 +59,16 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
 
     if (!rawUrl) return undefined
 
-    // Si ya es URL completa, retornar
-    if (rawUrl.startsWith('http')) return rawUrl
+    // Si ya es URL completa o ruta local de estáticos (/clients/... /images/...)
+    if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://') || rawUrl.startsWith('/clients/') || rawUrl.startsWith('/images/')) {
+      return rawUrl
+    }
 
     // Agregar prefijo de Strapi
     return `${STRAPI_BASE_URL}${rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl}`
   }
 
-  // Cargar clientes de Strapi
+  // Cargar clientes de Strapi o usar fallback
   useEffect(() => {
     let mounted = true
 
@@ -79,15 +81,20 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
         
         if (parsedClients.length > 0) {
           setClients(parsedClients)
+        } else {
+          setClients(DEFAULT_CLIENTS)
         }
       } catch (err) {
         console.error('Error fetching clients from Strapi:', err)
+        if (mounted) {
+          setClients(DEFAULT_CLIENTS)
+        }
       }
     }
 
     if (strapiSlides && strapiSlides.length > 0) {
       const parsedClients = parseClientsFromStrapi({ data: strapiSlides })
-      setClients(parsedClients)
+      setClients(parsedClients.length > 0 ? parsedClients : DEFAULT_CLIENTS)
     } else {
       loadClients()
     }
@@ -131,12 +138,12 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
     <section
       ref={sectionRef}
       id="clientes"
-      className="w-full flex items-center justify-center px-4 py-16 bg-transparent"
+      className="w-full flex items-center justify-center px-2 sm:px-4 py-8 sm:py-16 bg-transparent"
       aria-roledescription="carrusel"
       aria-label="Nuestros clientes"
     >
       <motion.div
-        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-2 sm:px-4 border-2 border-red-600/70 max-w-[1600px]"
+        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-1 sm:px-4 border-2 border-red-600/70 max-w-[1600px]"
         animate={{
           boxShadow: [
             "0 0 12px rgba(229,27,36,0.25), inset 0 0 8px rgba(229,27,36,0.15)",
@@ -156,9 +163,8 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
         }}
         style={{
           background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 70%, #1e1e1e 100%)',
-          padding: '3px sm:4px md:6px',
+          padding: '3px',
           maxWidth: '100%',
-          minHeight: '600px',
         }}
       >
         {/* Esquinas LED */}
@@ -198,22 +204,22 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
           <GeometricPattern opacity={0.05} />
 
           {/* Área principal */}
-          <div className="flex-1 flex flex-col items-center justify-between py-12 px-6 relative z-10">
+          <div className="flex-1 flex flex-col items-center justify-between py-6 sm:py-12 px-3 sm:px-6 relative z-10">
             {/* Header */}
-            <div className="text-center mb-8 w-full">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <div className="h-px w-16 md:w-28" style={{ background: 'linear-gradient(90deg, transparent, #E51B24)' }} />
+            <div className="text-center mb-4 sm:mb-8 w-full">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 px-2">
+                <div className="h-px w-8 sm:w-16 md:w-28" style={{ background: 'linear-gradient(90deg, transparent, #E51B24)' }} />
                 <h2
-                  className="font-black uppercase tracking-wider text-white"
-                  style={{ fontSize: 'clamp(28px, 5vw, 56px)', letterSpacing: '0.08em', textShadow: '0 0 30px rgba(229,27,36,0.3)' }}
+                  className="font-black uppercase tracking-wider text-white text-center"
+                  style={{ fontSize: 'clamp(20px, 5vw, 56px)', letterSpacing: '0.08em', textShadow: '0 0 30px rgba(229,27,36,0.3)' }}
                 >
                   NUESTROS CLIENTES
                 </h2>
-                <div className="h-px w-16 md:w-28" style={{ background: 'linear-gradient(90deg, #E51B24, transparent)' }} />
+                <div className="h-px w-8 sm:w-16 md:w-28" style={{ background: 'linear-gradient(90deg, #E51B24, transparent)' }} />
               </div>
               <p
-                className="uppercase tracking-widest font-medium"
-                style={{ fontSize: 'clamp(10px, 1.4vw, 16px)', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.22em' }}
+                className="uppercase tracking-widest font-medium text-center"
+                style={{ fontSize: 'clamp(9px, 1.4vw, 16px)', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.18em' }}
               >
                 MÁS QUE LOGOS, HISTORIAS DISPENSADAS
               </p>
@@ -221,7 +227,7 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
 
             {/* Carrusel */}
             <div
-              className="flex items-center justify-center gap-4 md:gap-10 w-full overflow-hidden py-8"
+              className="flex items-center justify-center gap-2 sm:gap-6 md:gap-10 w-full overflow-hidden py-4 sm:py-8"
               role="region"
               aria-label="Testimonios de clientes"
             >
@@ -230,26 +236,23 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
                 onClick={goToPrevious}
                 disabled={totalClients === 0}
                 aria-label="Cliente anterior"
-                className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50 flex-shrink-0"
+                className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50 flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
                 style={{
-                  width: 56,
-                  height: 56,
                   background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
                   border: '1px solid rgba(255,255,255,0.12)',
                   color: 'rgba(255,255,255,0.9)',
                 }}
               >
-                <ChevronLeft size={28} />
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
               </button>
 
               {/* 3 Contenedores de Imágenes */}
-              <div className="flex items-end justify-center gap-6 md:gap-10 overflow-hidden">
-                {/* Izquierda */}
+              <div className="flex items-center justify-center gap-4 md:gap-8 overflow-hidden">
+                {/* Izquierda (Visible solo en pantallas medianas+) */}
                 <button
                   onClick={goToPrevious}
                   aria-label="Ver cliente anterior"
-                  className="rounded-xl overflow-hidden flex items-center justify-center transition-all p-4 bg-neutral-900/60 border border-white/10"
-                  style={{ width: 160, height: 160 }}
+                  className="hidden md:flex rounded-xl overflow-hidden items-center justify-center transition-all p-3 md:p-4 bg-neutral-900/60 border border-white/10 flex-shrink-0 w-[140px] h-[140px] lg:w-[160px] lg:h-[160px]"
                 >
                   {getImageUrl(leftClient) ? (
                     <img
@@ -262,30 +265,30 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
                   )}
                 </button>
 
-                {/* Central (Activa) */}
+                {/* Central (Activa - adaptable a móviles) */}
                 <div
                   role="group"
                   aria-label={`Cliente ${currentSlide + 1} de ${totalClients}: ${currentClient?.titulo ?? ''}`}
-                  className="rounded-2xl overflow-hidden flex items-center justify-center p-6 bg-neutral-900 border-2 border-red-600/50 shadow-xl shadow-red-900/30"
-                  style={{ width: 280, height: 280 }}
+                  className="rounded-2xl overflow-hidden flex items-center justify-center p-4 sm:p-6 bg-neutral-900 border-2 border-red-600/50 shadow-xl shadow-red-900/30 flex-shrink-0 w-[190px] h-[190px] xs:w-[220px] xs:h-[220px] sm:w-[250px] sm:h-[250px] md:w-[280px] md:h-[280px]"
                 >
                   {getImageUrl(currentClient) ? (
                     <img
                       src={getImageUrl(currentClient)}
                       alt={currentClient?.titulo ?? `Cliente ${currentClient?.id}`}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain max-h-full max-w-full"
                     />
                   ) : (
-                    <div className="w-full h-full bg-neutral-800 rounded-lg" />
+                    <div className="w-full h-full bg-neutral-800 rounded-lg flex items-center justify-center text-white/50 text-xs text-center p-2">
+                      {currentClient?.titulo || 'Cliente'}
+                    </div>
                   )}
                 </div>
 
-                {/* Derecha */}
+                {/* Derecha (Visible solo en pantallas medianas+) */}
                 <button
                   onClick={goToNext}
                   aria-label="Ver cliente siguiente"
-                  className="rounded-xl overflow-hidden flex items-center justify-center transition-all p-4 bg-neutral-900/60 border border-white/10"
-                  style={{ width: 160, height: 160 }}
+                  className="hidden md:flex rounded-xl overflow-hidden items-center justify-center transition-all p-3 md:p-4 bg-neutral-900/60 border border-white/10 flex-shrink-0 w-[140px] h-[140px] lg:w-[160px] lg:h-[160px]"
                 >
                   {getImageUrl(rightClient) ? (
                     <img
@@ -304,28 +307,24 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
                 onClick={goToNext}
                 disabled={totalClients === 0}
                 aria-label="Cliente siguiente"
-                className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50 flex-shrink-0"
+                className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50 flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
                 style={{
-                  width: 56,
-                  height: 56,
                   background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
                   border: '1px solid rgba(255,255,255,0.12)',
                   color: 'rgba(255,255,255,0.9)',
                 }}
               >
-                <ChevronRight size={28} />
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
               </button>
             </div>
 
             {/* Controles de reproducción e indicadores */}
-            <div className="flex items-center gap-4 mb-3 mt-6">
+            <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3 mt-4 sm:mt-6">
               <button
                 onClick={() => setIsAutoplay(!isAutoplay)}
                 aria-label={isAutoplay ? 'Pausar autoplay' : 'Activar autoplay'}
-                className="flex items-center justify-center rounded-lg transition-all duration-150 active:scale-95 flex-shrink-0"
+                className="flex items-center justify-center rounded-lg transition-all duration-150 active:scale-95 flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9"
                 style={{
-                  width: 36,
-                  height: 36,
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   color: 'rgba(255,255,255,0.6)',
@@ -334,7 +333,7 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
                 {isAutoplay ? <Pause size={16} /> : <Play size={16} />}
               </button>
 
-              <div className="flex items-center gap-2 flex-wrap justify-center" role="tablist">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center" role="tablist">
                 {clients.map((_, index) => (
                   <button
                     key={index}
@@ -343,7 +342,7 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
                     role="tab"
                     className="rounded-full transition-all duration-300"
                     style={{
-                      width: index === currentSlide ? 28 : 8,
+                      width: index === currentSlide ? 24 : 8,
                       height: 8,
                       background: index === currentSlide ? '#E51B24' : 'rgba(255,255,255,0.2)',
                       boxShadow: index === currentSlide ? '0 0 8px rgba(229,27,36,0.6)' : 'none',
@@ -353,8 +352,8 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
               </div>
 
               <span
-                className="font-mono font-bold flex-shrink-0"
-                style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em' }}
+                className="font-mono font-bold flex-shrink-0 text-xs sm:text-sm"
+                style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em' }}
               >
                 {String(currentSlide + 1).padStart(2, '0')}/{String(Math.max(1, totalClients)).padStart(2, '0')}
               </span>
@@ -383,7 +382,6 @@ export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionPr
               <Numpad 
                 activeIndex={currentSlide} 
                 total={totalClients} 
-                clients={clients}
                 onSelect={(i: number) => goToSlide(i)} 
               />
             )}

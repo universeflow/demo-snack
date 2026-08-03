@@ -98,7 +98,7 @@ export function TextCard({ slide }: { slide?: Slide }) {
 }
 
 // 2. COMPONENTE PRINCIPAL CARRUSEL
-export default function Carousel({ slides, height = "min(80vh, 820px)", intervalMs = 3000 }: CarouselProps) {
+export default function Carousel({ slides, height, intervalMs = 3000 }: CarouselProps) {
   const [index, setIndex] = useState(0)
   const [dir, setDir] = useState(1)
   const mounted = useRef(true)
@@ -127,13 +127,13 @@ export default function Carousel({ slides, height = "min(80vh, 820px)", interval
   const exit = (d: number) => ({ x: d > 0 ? -80 : 80, opacity: 0, rotateY: d > 0 ? -16 : 16, scale: 0.98 })
 
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-4" style={{ perspective: 1600 }}>
+    <div className="w-full flex flex-col items-center justify-center gap-3 sm:gap-4" style={{ perspective: 1600 }}>
       {/* Muestra la tarjeta del texto */}
       <TextCard slide={currentSlide} />
 
       {/* MARCO GRANDE PRINCIPAL CON LA IMAGEN */}
       <motion.div
-        className="relative w-full mx-auto rounded-xl overflow-hidden"
+        className="relative w-full mx-auto rounded-xl overflow-hidden h-[240px] xs:h-[300px] sm:h-[400px] md:h-[500px] lg:h-[620px]"
         animate={{
           boxShadow: [
             "0 0 6px rgba(229,27,36,0.18), inset 0 0 6px rgba(229,27,36,0.06)",
@@ -144,7 +144,7 @@ export default function Carousel({ slides, height = "min(80vh, 820px)", interval
         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
         style={{
           maxWidth: "1280px",
-          height,
+          ...(height ? { height } : {}),
           border: "2px solid rgba(229,27,36,0.55)",
           padding: 6,
           background: "linear-gradient(180deg, rgba(0,0,0,0.04), transparent)",
@@ -170,7 +170,7 @@ export default function Carousel({ slides, height = "min(80vh, 820px)", interval
               className="absolute inset-0 flex items-center justify-center"
             >
               {/* Imagen Principal Grande */}
-              <div className="w-full h-full flex items-center justify-center px-8">
+              <div className="w-full h-full flex items-center justify-center px-2 sm:px-8">
                 {imageSrc && (
                   <img
                     src={imageSrc}

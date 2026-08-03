@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main className="bg-black overflow-hidden">
       <Navigation />
-      <section id="hero" className="h-screen bg-black flex items-center justify-center px-4 py-0">
+      <section id="hero" className="min-h-screen bg-black flex items-center justify-center px-2 sm:px-4 py-16 sm:py-0">
         <VendingMachineBanner />
       </section>
       <div id="clientes" className="py-12 scroll-section">

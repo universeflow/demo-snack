@@ -69,7 +69,9 @@ export async function getClientesSnackPro(isDraft = false): Promise<InformacionC
       // Construcción de la URL completa
       let finalImageUrl: string | null = null;
       if (rawUrl) {
-        finalImageUrl = rawUrl.startsWith('http') ? rawUrl : `${STRAPI_URL}${rawUrl}`;
+        finalImageUrl = rawUrl.startsWith('http') || rawUrl.startsWith('/clients/') || rawUrl.startsWith('/images/') || rawUrl.startsWith('data:')
+          ? rawUrl
+          : `${STRAPI_URL}${rawUrl.startsWith('/') ? '' : '/'}${rawUrl}`;
       }
 
       return {
