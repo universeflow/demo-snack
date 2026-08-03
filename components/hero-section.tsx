@@ -1,95 +1,127 @@
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import Carousel from "./carousel"
-import { getCarruselSnackPro } from "../src/lib/get-carrusel-content"
+"use client"
 
-const NODES = [
-  { x: 2, y: 5 }, { x: 8, y: 15 }, { x: 15, y: 8 }, { x: 22, y: 20 },
-  { x: 5, y: 35 }, { x: 12, y: 45 }, { x: 20, y: 38 }, { x: 28, y: 25 },
-  { x: 35, y: 12 }, { x: 42, y: 30 }, { x: 48, y: 18 }, { x: 3, y: 60 },
-  { x: 10, y: 70 }, { x: 18, y: 58 }, { x: 25, y: 72 }, { x: 32, y: 50 },
-  { x: 40, y: 65 }, { x: 48, y: 80 }, { x: 55, y: 10 }, { x: 62, y: 28 },
-  { x: 70, y: 15 }, { x: 78, y: 5 }, { x: 85, y: 22 }, { x: 92, y: 12 },
-  { x: 98, y: 30 }, { x: 68, y: 45 }, { x: 75, y: 60 }, { x: 82, y: 75 },
-  { x: 90, y: 55 }, { x: 96, y: 70 }, { x: 60, y: 78 }, { x: 55, y: 95 },
-  { x: 45, y: 88 }, { x: 38, y: 95 }, { x: 25, y: 88 }, { x: 15, y: 95 },
-  { x: 5, y: 82 }, { x: 72, y: 90 }, { x: 88, y: 92 }, { x: 50, y: 55 },
-]
+import { motion, Variants } from "framer-motion"
+import Image from "next/image"
 
-const EDGES: [number, number][] = [
-  [0,1],[1,2],[2,3],[0,4],[1,4],[4,5],[5,6],[6,7],[7,3],[3,8],
-  [8,9],[9,10],[2,8],[6,9],[10,18],[18,19],[19,20],[20,21],[21,22],
-  [22,23],[23,24],[19,25],[25,26],[26,27],[27,28],[28,29],[29,24],
-  [25,9],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[11,4],
-  [12,5],[13,6],[14,7],[15,9],[16,25],[17,26],[30,31],[31,32],
-  [32,33],[33,34],[34,35],[35,36],[36,11],[37,27],[38,29],[37,38],
-  [37,30],[38,29],[39,25],[39,15],
-]
-
-const DEFAULT_HERO_SLIDES = [
-  { src: "/images/slide1.jpg", title: "ELIGE", subtitle: "Encuentra tu opción", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
-  { src: "/images/slide2.jpg", title: "PRESIONA", subtitle: "Servicio rápido", accentColor: "var(--accent, #E51B24)", objectPosition: "center" },
-  { src: "/images/slide3.jpg", title: "DISFRUTA", subtitle: "Calidad al instante", accentColor: "var(--accent, #E51B24)", objectPosition: "center" }
-]
+const fadeUpVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.8,
+      ease: [0.25, 0.4, 0.25, 1],
+    },
+  }),
+}
 
 export function HeroSection() {
-  const [slides, setSlides] = useState<any[]>(DEFAULT_HERO_SLIDES)
-
-  useEffect(() => {
-    let mounted = true
-    async function fetchSlides() {
-      try {
-        const data = await getCarruselSnackPro()
-        if (mounted && data && data.length > 0) {
-          setSlides(
-            data.map((item) => ({
-              src: item.url || "/images/slide1.jpg",
-              title: item.titulo_blanco ?? "",
-              subtitle: item.titulo_rojo ?? "",
-              accentColor: "var(--accent, #E51B24)",
-              objectPosition: "center",
-            }))
-          )
-        }
-      } catch (err) {
-        console.error("Error obteniendo carrusel en HeroSection:", err)
-      }
-    }
-    fetchSlides()
-    return () => {
-      mounted = false
-    }
-  }, [])
-
   return (
-    <section id="hero" className="relative w-full min-h-screen text-white overflow-hidden pt-20">
+    <section id="hero" className="relative w-full min-h-screen bg-white overflow-hidden">
       {/* Left Background Pattern - Bottom Left Corner */}
-      <div className="absolute bottom-0 left-0 w-80 h-80 opacity-30 -rotate-12 pointer-events-none">
-        <img src="/images/izquierda.png" alt="Left pattern" className="w-full h-full object-cover" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 opacity-50 -rotate-12">
+        <Image src="/images/izquierda.png" alt="Left pattern" fill className="object-cover" priority />
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 w-full max-w-3xl space-y-10">
-        {/* Main Titles */}
-        {/* ...existing code (títulos y textos) ... */}
+      {/* Right Background Pattern - Top Right Corner */}
+      <div className="absolute top-0 right-0 w-80 h-80 opacity-50 rotate-12">
+        <Image src="/images/derecha.png" alt="Right pattern" fill className="object-cover" priority />
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-6 py-20">
-        {/* Carousel row: centered, full-width up to max-w-7xl */}
-        <div className="w-full flex justify-center mb-8">
-          <div className="w-full max-w-7xl mx-auto">
-            <Carousel
-              slides={slides}
-              height={"min(80vh, 820px)"}
-              intervalMs={3000}
-            />
+
+
+      {/* Main Content Container */}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="w-full max-w-7xl mx-auto px-6 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Text Content */}
+            <motion.div className="space-y-8">
+              {/* Main Title */}
+              <div className="space-y-2">
+                <motion.h1
+                  variants={fadeUpVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={0}
+                  className="text-6xl md:text-8xl font-black text-[#121212] leading-[0.9]"
+                >
+                  ELIGE
+                </motion.h1>
+                <motion.h1
+                  variants={fadeUpVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={0.5}
+                  className="text-6xl md:text-8xl font-black text-[#121212] leading-[0.9]"
+                >
+                  PRESIONA
+                </motion.h1>
+                <motion.h1
+                  variants={fadeUpVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={1}
+                  className="text-6xl md:text-8xl font-black text-red-600 leading-[0.9]"
+                >
+                  DISFRUTA
+                </motion.h1>
+              </div>
+
+              {/* Statistics Section */}
+              <motion.div
+                variants={fadeUpVariants}
+                initial="hidden"
+                animate="visible"
+                custom={1.5}
+                className="space-y-2"
+              >
+                <div className="text-5xl md:text-6xl font-black text-[#121212]">2,023+</div>
+                <div className="text-lg md:text-xl font-bold text-[#121212]">CLIENTES SATISFECHOS</div>
+                <div className="text-base md:text-lg font-bold text-red-600">UNIDAD DE MÁQUINAS SNACK</div>
+              </motion.div>
+
+              {/* Description */}
+              <motion.p
+                variants={fadeUpVariants}
+                initial="hidden"
+                animate="visible"
+                custom={2}
+                className="text-base md:text-lg text-[#121212]/70 max-w-sm"
+              >
+                Llevamos las mejores máquinas dispensadoras a tu empresa o establecimiento.
+              </motion.p>
+
+
+            </motion.div>
+
+            {/* Right Column - Image Content */}
+            <motion.div
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate="visible"
+              custom={3}
+              className="flex flex-col items-center space-y-8"
+            >
+              {/* Machine Image */}
+              <div className="relative w-full h-96 flex justify-center">
+                <Image
+                  src="/images/demo.png"
+                  alt="Máquina SNACK Pro"
+                  fill
+                  className="scale-down"
+                  priority
+                />
+              </div>
+
+              {/* Machine Description */}
+              <div className="text-center space-y-4">
+                <h2 className="text-5xl md:text-6xl font-black text-[#121212]">MÁQUINA</h2>
+                <h2 className="text-5xl md:text-6xl font-black text-[#121212]">SNACK</h2>
+
+              </div>
+            </motion.div>
           </div>
-        </div>
-
-        {/* grid content (maquina u otros) */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* RIGHT: ...existing code... */}
-          {/* ...existing code... */}
         </div>
       </div>
     </section>

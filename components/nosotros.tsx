@@ -1,175 +1,163 @@
-import React, { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import { getMisionSection, MisionSectionPayload } from "../src/lib/get-nosotros-content"
-import { getVisionSection, VisionSectionPayload } from "../src/lib/get-nosotros-content"
-import { getQuienesSomosSection, QuienesSomosSectionPayload } from "../src/lib/get-nosotros-content"
-import { getNosotrosSection, NosotrosSectionPayload } from "../src/lib/get-nosotros-content"
-import { BlocksRenderer } from "@strapi/blocks-react-renderer"
+"use client"
+
+import { motion, Variants } from 'framer-motion'
+
+// Same nodes and edges as hero for consistent background pattern
+const NODES = [
+  { x: 2, y: 5 }, { x: 8, y: 15 }, { x: 15, y: 8 }, { x: 22, y: 20 },
+  { x: 5, y: 35 }, { x: 12, y: 45 }, { x: 20, y: 38 }, { x: 28, y: 25 },
+  { x: 35, y: 12 }, { x: 42, y: 30 }, { x: 48, y: 18 }, { x: 3, y: 60 },
+  { x: 10, y: 70 }, { x: 18, y: 58 }, { x: 25, y: 72 }, { x: 32, y: 50 },
+  { x: 40, y: 65 }, { x: 48, y: 80 }, { x: 55, y: 10 }, { x: 62, y: 28 },
+  { x: 70, y: 15 }, { x: 78, y: 5 }, { x: 85, y: 22 }, { x: 92, y: 12 },
+  { x: 98, y: 30 }, { x: 68, y: 45 }, { x: 75, y: 60 }, { x: 82, y: 75 },
+  { x: 90, y: 55 }, { x: 96, y: 70 }, { x: 60, y: 78 }, { x: 55, y: 95 },
+  { x: 45, y: 88 }, { x: 38, y: 95 }, { x: 25, y: 88 }, { x: 15, y: 95 },
+  { x: 5, y: 82 }, { x: 72, y: 90 }, { x: 88, y: 92 }, { x: 50, y: 55 },
+]
+
+const EDGES: [number, number][] = [
+  [0,1],[1,2],[2,3],[0,4],[1,4],[4,5],[5,6],[6,7],[7,3],[3,8],
+  [8,9],[9,10],[2,8],[6,9],[10,18],[18,19],[19,20],[20,21],[21,22],
+  [22,23],[23,24],[19,25],[25,26],[26,27],[27,28],[28,29],[29,24],
+  [25,9],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[11,4],
+  [12,5],[13,6],[14,7],[15,9],[16,25],[17,26],[30,31],[31,32],
+  [32,33],[33,34],[34,35],[35,36],[30,16],[31,17],[32,39],[33,15],
+  [36,11],[37,27],[38,29],[37,38],[37,30],[38,29],[39,25],[39,15],
+]
+
+const fadeUpVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.2,
+      duration: 0.8,
+      ease: [0.25, 0.4, 0.25, 1],
+    },
+  }),
+}
 
 export function Nosotros() {
-  const [mision, setMision] = useState<MisionSectionPayload | null>(null)
-  const [vision, setVision] = useState<VisionSectionPayload | null>(null);
-  const [quienesSomos, setQuienesSomos] = useState<QuienesSomosSectionPayload | null>(null);
-  const [nosotros, setNosotros] = useState<NosotrosSectionPayload | null>(null);
 
-  useEffect(() => {
-    let mounted = true;
-
-    // Ejecutar las 3 llamadas en paralelo (Misión, Visión, Quiénes Somos)
-    Promise.all([getMisionSection(), getVisionSection(), getQuienesSomosSection(), getNosotrosSection()])
-      .then(([misionItems, visionItems, quienesItems, nosotrosItems]) => {
-        if (!mounted) return;
-
-        const misionItem = misionItems && misionItems.length > 0 ? misionItems[0] : null;
-        setMision(misionItem);
-
-        const visionItem = visionItems && visionItems.length > 0 ? visionItems[0] : null;
-        setVision(visionItem);
-
-        const quienesItem = quienesItems && quienesItems.length > 0 ? quienesItems[0] : null;
-        setQuienesSomos(quienesItem);
-
-        const nosotrosItem = nosotrosItems && nosotrosItems.length > 0 ? nosotrosItems[0] : null;
-        setNosotros(nosotrosItem);  
-
-      })
-      .catch((error) => {
-        console.error("Error cargando los datos de Nosotros:", error);
-        if (!mounted) return;
-        setMision(null);
-        setVision(null);
-        setQuienesSomos(null);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  // datos Mision
-  const misionTitulo = mision?.titulo ?? "Misión"
-  const misionDescripcion = mision?.descripcion
-  // datos Vision
-  const visionTitulo = vision?.titulo ?? "Visión"
-  const visionDescripcion = vision?.descripcion
-
-  // datos Quienes somos
-  const quienesSomosTitulo = quienesSomos?.titulo ?? "Quiénes Somos"
-  const quienesSomosDescripcion = quienesSomos?.descripcion 
-
-  // datos Nosotros
-  const nosotrosDescripcion = nosotros?.descripcion
-
-
-  // helper: detecta bloques u objeto y renderiza BlocksRenderer, si es string devuelve el string
-  const renderBlocksOrText = (content: unknown, fallback: string) => {
-    if (!content) return fallback
-
-    // Si es string, usar tal cual
-    if (typeof content === "string") return content
-
-    // Si parece un arreglo de bloques o un objeto de bloques, intentar renderizar
-    if (Array.isArray(content) || (typeof content === "object" && content !== null)) {
-      try {
-        return <BlocksRenderer content={content as any} />
-      } catch (err) {
-        console.warn("BlocksRenderer falló al renderizar, mostrando texto plano:", err)
-        // Si el objeto contiene texto plano dentro, intentar extraer alguna propiedad string
-        if (typeof (content as any).text === "string") return (content as any).text
-        return fallback
-      }
-    }
-
-    return fallback
-  }
+  const sections = [
+    {
+      title: 'Quiénes Somos',
+      content: 'SNACK Pro es una empresa líder en soluciones de máquinas dispensadoras inteligentes. Con más de 50 máquinas instaladas y un 99% de disponibilidad, nos comprometemos a revolucionar la forma en que las empresas distribuyen snacks y bebidas a sus empleados.',
+    },
+    {
+      title: 'Misión',
+      content: 'Proporcionar máquinas dispensadoras de última generación que mejoren la experiencia de los usuarios, aumenten la productividad en las empresas y ofrezcan soluciones de distribución automática confiables y eficientes.',
+    },
+    {
+      title: 'Visión',
+      content: 'Ser la plataforma de dispensación automática más innovadora de la región, transformando el mercado con tecnología inteligente, sostenibilidad ambiental y un servicio de excelencia en cada punto de contacto.',
+    },
+  ]
 
   return (
-    <section id="nosotros" className="w-full min-h-screen flex items-center justify-center px-4 py-12">
-      <motion.div
-        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-2 sm:px-4 border-2 border-red-600/70 max-w-7xl"
-        animate={{
-          boxShadow: [
-            "0 0 12px rgba(229,27,36,0.2), inset 0 0 8px rgba(229,27,36,0.08)",
-            "0 0 28px rgba(229,27,36,0.55), inset 0 0 14px rgba(229,27,36,0.2)",
-            "0 0 12px rgba(229,27,36,0.2), inset 0 0 8px rgba(229,27,36,0.08)",
-          ],
-          borderColor: [
-            "rgba(229,27,36,0.45)",
-            "rgba(229,27,36,0.9)",
-            "rgba(229,27,36,0.45)",
-          ]
-        }}
-        transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+    <section className="relative w-full min-h-screen bg-black overflow-hidden flex items-center justify-center px-2 sm:px-4 py-8 md:py-0">
+      <div
         style={{
-          padding: '4px',
-          background: 'linear-gradient(145deg,#121212 0%, #0e0e0e 100%)'
+          position: 'relative',
+          width: '100%',
+          maxWidth: 1200,
+          minHeight: 'auto',
+          background: 'linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)',
+          overflow: 'hidden',
+          fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
+          borderRadius: 8,
+          boxShadow: '0 8px 48px rgba(0,0,0,0.5)',
+          padding: '20px 0 sm:30px md:40px 0',
         }}
       >
-        {/* corner LEDs */}
-        <motion.span className="absolute top-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
-        <motion.span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 0.9 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
-        <motion.span className="absolute bottom-3 left-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 0.45 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
-        <motion.span className="absolute bottom-3 right-3 w-2 h-2 rounded-full bg-red-500 z-30" animate={{ opacity: [0.25,1,0.25] }} transition={{ repeat: Infinity, duration: 1.8, delay: 1.35 }} style={{ boxShadow: "0 0 8px #E51B24" }} />
+        {/* Geometric SVG background - Exact from hero */}
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid slice"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.08 }}
+        >
+          {EDGES.map(([a, b], i) => (
+            <line
+              key={i}
+              x1={NODES[a].x} y1={NODES[a].y}
+              x2={NODES[b].x} y2={NODES[b].y}
+              stroke="#E51B24" strokeWidth="0.3"
+            />
+          ))}
+          {NODES.map((n, i) => (
+            <circle key={i} cx={n.x} cy={n.y} r="0.55" fill="#E51B24" />
+          ))}
+        </svg>
 
-        <div className="relative rounded-xl overflow-hidden p-4 sm:p-8 md:p-12 bg-[#121212]">
+        {/* Content */}
+        <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ padding: '16px 20px sm:24px md:40px md:56px' }}>
+        <div className="w-full">
           {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white">NOSOTROS</h2>
-            <div className="mx-auto mt-3 w-16 sm:w-20 h-1 bg-red-600 rounded" />
+          <motion.div
+            className="text-center mb-8 sm:mb-12 md:mb-16"
+            initial={{ opacity: 0, y: -40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4">
+              NOSOTROS
+            </h2>
+            <div className="w-16 sm:w-20 h-1 bg-red-500 mx-auto rounded-full" />
+          </motion.div>
+
+          {/* Three Sections Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            {sections.map((section, index) => (
+              <motion.div
+                key={section.title}
+                variants={fadeUpVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={index}
+                className="flex flex-col"
+              >
+                <div
+                  className="flex flex-col h-full p-8 rounded-2xl"
+                  style={{
+                    background: 'linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%)',
+                    border: '1px solid #E51B24',
+                    boxShadow:
+                      'inset 0 1px 3px rgba(255,255,255,0.05), 0 0 20px rgba(229,27,36,0.15)',
+                  }}
+                >
+                  {/* Section Title */}
+                  <h3 className="text-2xl font-bold text-red-500 mb-4">
+                    {section.title}
+                  </h3>
+
+                  {/* Divider */}
+                  <div className="w-12 h-1 bg-red-500 rounded-full mb-6" />
+
+                  {/* Content */}
+                  <p className="text-gray-300 leading-relaxed text-sm md:text-base flex-grow">
+                    {section.content}
+                  </p>
+
+                  {/* Footer accent */}
+                  <div className="mt-6 pt-6 border-t border-red-500/20">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-red-500 rounded-full" />
+                      <span className="text-xs text-red-500/80 font-semibold">
+                        SNACK PRO
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
-
-          {/* Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch"> 
-  {/* 👇 Agregamos 'items-stretch' al grid padre para que todas las tarjetas tengan la misma altura */}
-
-  {/* Misión: contenedor relativo */}
-  {/* 👇 Agregamos 'relative' y 'pb-24' (padding inferior para no tapar el texto) al <article> */}
-  <article className="relative rounded-xl border border-red-500/20 p-6 bg-black/40 pb-24">
-        <h3 className="text-xl font-bold text-red-500 mb-3">
-          {typeof misionTitulo === "string"
-            ? misionTitulo
-            : <BlocksRenderer content={misionTitulo as any} />
-          }
-        </h3>
-
-        <p className="text-sm text-white/80 leading-relaxed">
-          {renderBlocksOrText(misionDescripcion, "Proporcionar máquinas dispensadoras de última generación...")}
-        </p>
-
-        {/* 👇 Convertimos este div en absoluto: 'absolute', 'bottom-6', 'left-6', 'right-6' */}
-        <div className="absolute bottom-6 left-6 right-6 rounded-md border border-red-800/30 p-3 bg-black/30 text-red-400 font-mono text-xs">
-          • SNACK PRO
         </div>
-    </article>
-
-  {/* Visión: contenedor relativo */}
-  {/* 👇 Repetimos: 'relative' y 'pb-24' al <article> */}
-      <article className="relative rounded-xl border border-red-500/20 p-6 bg-black/40 pb-24">
-          <h3 className="text-xl font-bold text-red-500 mb-3 ">
-            {typeof visionTitulo === "string"
-              ? visionTitulo
-              : <BlocksRenderer content={visionTitulo as any} />
-            }
-          </h3>
-          <p className="text-sm text-white/80 leading-relaxed">
-            {renderBlocksOrText(visionDescripcion, "")}
-          </p>
-
-          {/* 👇 Repetimos: 'absolute', 'bottom-6', 'left-6', 'right-6' */}
-          <div className="absolute bottom-6 left-6 right-6 rounded-md border border-red-800/30 p-3 bg-black/30 text-red-400 font-mono text-xs">
-            • SNACK PRO
-          </div>
-      </article>
         </div>
-
-          {/* Body text area (texto largo de foto) */}
-          <div className="mt-8 prose prose-invert max-w-none text-sm text-white/80 text-justify">
-            {renderBlocksOrText(nosotrosDescripcion, "")}
-          </div>
-        </div>
-      </motion.div>
+      </div>
     </section>
   )
 }
-
-export default Nosotros

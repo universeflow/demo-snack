@@ -1,6 +1,26 @@
+# Robots.txt para SNACK PRO
+# Permite que todos los bots de búsqueda rastreen el sitio
+
 User-agent: *
 Allow: /
-Disallow: /admin/
+Allow: /sitio-completo
+Allow: /construction
+Disallow: /_next/
 Disallow: /api/
+Disallow: /*.json$
 
-Sitemap: https://snackpro.cl/sitemap.xml
+# Google Bot específico
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing Bot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Referencia al sitemap
+Sitemap: https://www.snackpro.cl/sitemap.xml
+
+# Tiempo de rastreo preferido
+Visit-time: 0600-0800

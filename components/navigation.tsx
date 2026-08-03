@@ -1,93 +1,196 @@
-import React, { useState } from "react"
+"use client"
+
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link"
+import { useLenis } from "lenis/react"
 import { Menu, X } from "lucide-react"
 
-type NavProps = {
-  activeSection?: string
-  onNavigate?: (id: string) => void
+const linkVariants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.4,
+      ease: [0.25, 0.4, 0.25, 1],
+    },
+  }),
 }
 
-export function Navigation({ activeSection = "inicio", onNavigate }: NavProps) {
-  const [isOpen, setIsOpen] = useState(false)
+const mobileMenuVariants = {
+  hidden: { opacity: 0, height: 0 },
+  visible: {
+    opacity: 1,
+    height: "auto",
+    transition: {
+      duration: 0.3,
+      ease: [0.25, 0.4, 0.25, 1],
+    },
+  },
+  exit: {
+    opacity: 0,
+    height: 0,
+    transition: {
+      duration: 0.2,
+      ease: [0.25, 0.4, 0.25, 1],
+    },
+  },
+}
 
-  const navLinks = [
-    { name: "Inicio", id: "inicio" },
-    { name: "Nosotros", id: "nosotros" },
-    { name: "Servicios", id: "servicios" },
-    { name: "Contacto", id: "contacto" },
-  ]
+export function Navigation() {
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const lenis = useLenis()
 
-  const handleClick = (e: React.MouseEvent, id: string) => {
-    e.preventDefault()
-    setIsOpen(false)
-    if (onNavigate) {
-      onNavigate(id)
-    } else if (typeof window !== "undefined") {
-      const el = document.getElementById(id)
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" })
-      }
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
     }
-    // update hash for bookmarking / back
-    if (typeof window !== "undefined") window.history.pushState(null, "", `#${id}`)
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const scrollToSection = (id: string) => {
+    const element = document.querySelector(id)
+    if (element && lenis) {
+      lenis.scrollTo(element as HTMLElement, { offset: -100 })
+    }
+    setMobileMenuOpen(false)
   }
 
+  const navLinks = [
+    { label: "Inicio", href: "#hero" },
+    { label: "Clientes", href: "#clientes" },
+    { label: "Nosotros", href: "#nosotros" },
+    { label: "Servicios", href: "#servicios" },
+    { label: "Contacto", href: "#contacto" },
+  ]
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-[999] bg-[#2a2a2a]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="relative flex items-center justify-between h-16">
-          {/* Logo */}
-          <a href="#inicio" onClick={(e) => handleClick(e, "inicio")} className="flex items-center z-10">
-            <img
-              src="https://admin.snackpro.cl/logo.png"
-              alt="SnackPro Logo"
-              className="h-[52px] sm:h-[70px] md:h-[95px] w-auto object-contain py-1"
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 100, damping: 20 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled ? "bg-[#121212]/95 backdrop-blur-md border-b border-white/10" : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+          <motion.div
+            className="text-2xl font-black tracking-tighter relative overflow-hidden"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            <span className="text-red-500">Snack</span>
+            <motion.span
+              className="text-white"
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
+              Pro
+            </motion.span>
+            
+            {/* Efecto de brillo deslizante */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+              animate={{
+                x: ["-100%", "100%"],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "linear",
+              }}
             />
-          </a>
+          </motion.div>
+        </Link>
 
-          {/* Desktop Navigation - Centered */}
-          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                onClick={(e) => handleClick(e, link.id)}
-                className={`text-lg font-medium transition-colors ${activeSection === link.id ? "text-red-500" : "text-white hover:text-red-500"}`}
-              >
-                {link.name}
-              </a>
-            ))}
-          </nav>
-
-          {/* Right Spacer & Mobile menu button */}
-          <div className="flex items-center z-10">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
-              aria-label="Toggle menu"
+        <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+          {navLinks.map((item, i) => (
+            <motion.button
+              key={item.label}
+              onClick={() => scrollToSection(item.href)}
+              className={`text-sm font-medium tracking-wide transition-colors relative whitespace-nowrap ${
+                scrolled ? "text-white/80 hover:text-red-500" : "text-white/80 hover:text-red-500"
+              }`}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, duration: 0.4, ease: [0.25, 0.4, 0.25, 1] }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden bg-black border-b border-white/10 px-6 pt-2 pb-6 space-y-3">
-          {navLinks.map((link) => (
-            <a
-              key={link.id}
-              href={`#${link.id}`}
-              onClick={(e) => handleClick(e, link.id)}
-              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${activeSection === link.id ? "text-red-500" : "text-white hover:text-red-500 hover:bg-white/5"}`}
-            >
-              {link.name}
-            </a>
+              {item.label}
+              <motion.span
+                className="absolute -bottom-1 left-0 w-full h-0.5 bg-red-500 origin-left"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
+              />
+            </motion.button>
           ))}
         </div>
-      )}
-    </header>
+
+        <div className="flex-shrink-0" />
+
+        <motion.button
+          className="md:hidden p-2"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          whileTap={{ scale: 0.9 }}
+        >
+          <AnimatePresence mode="wait">
+            {mobileMenuOpen ? (
+              <motion.div
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <X className="text-white" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="menu"
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Menu className="text-white" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
+      </div>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
+            className="md:hidden bg-[#121212]/95 backdrop-blur-md border-t border-white/10 overflow-hidden"
+          >
+            <div className="px-6 py-4 space-y-4">
+              {navLinks.map((item, i) => (
+                <motion.button
+                  key={item.label}
+                  onClick={() => scrollToSection(item.href)}
+                  className="block w-full text-left text-white/80 hover:text-red-500 text-lg font-medium py-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  {item.label}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   )
 }
-
-export default Navigation
