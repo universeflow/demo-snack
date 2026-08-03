@@ -2,11 +2,11 @@ import React, { useState } from "react"
 import { Menu, X } from "lucide-react"
 
 type NavProps = {
-  activeSection: string
-  onNavigate: (id: string) => void
+  activeSection?: string
+  onNavigate?: (id: string) => void
 }
 
-export function Navigation({ activeSection, onNavigate }: NavProps) {
+export function Navigation({ activeSection = "inicio", onNavigate }: NavProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const navLinks = [
@@ -19,7 +19,14 @@ export function Navigation({ activeSection, onNavigate }: NavProps) {
   const handleClick = (e: React.MouseEvent, id: string) => {
     e.preventDefault()
     setIsOpen(false)
-    onNavigate(id)
+    if (onNavigate) {
+      onNavigate(id)
+    } else if (typeof window !== "undefined") {
+      const el = document.getElementById(id)
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" })
+      }
+    }
     // update hash for bookmarking / back
     if (typeof window !== "undefined") window.history.pushState(null, "", `#${id}`)
   }

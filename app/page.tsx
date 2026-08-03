@@ -5,9 +5,11 @@ import { Nosotros } from "@/components/nosotros"
 import { Servicios } from "@/components/servicios"
 import { Contacto } from "@/components/contacto"
 import { Footer } from "@/components/footer"
+import { WhatsAppButton } from "@/components/whatsapp-button"
 
 export default function Home() {
   return (
+    <div className="bg-black min-h-screen relative">
     <main className="bg-black overflow-hidden">
       <Navigation />
       <section id="hero" className="min-h-screen bg-black flex items-center justify-center px-2 sm:px-4 py-16 sm:py-0">
@@ -26,6 +28,9 @@ export default function Home() {
         <Contacto />
       </div>
       <Footer />
+    
     </main>
+    <WhatsAppButton />
+    </div>
   )
 }

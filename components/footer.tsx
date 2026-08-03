@@ -103,7 +103,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-white/50 hover:text-red-500 transition-colors font-mono text-xs"
             >
-              <span className="text-red-500 font-bold">Hecho por aenima-soluciones</span>
+              <span className="text-red-500 font-bold">© 2026 aenima-soluciones | Transformación Digital</span>
             </a>
           </div>
         </div>

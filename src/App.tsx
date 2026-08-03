@@ -6,6 +6,7 @@ import Nosotros from "@/components/nosotros"
 import Servicios from "@/components/servicios"
 import Contacto from "@/components/contacto"
 import Footer from "@/components/footer"
+import WhatsAppButton from "@/components/whatsapp-button"
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>("inicio")
@@ -31,7 +32,8 @@ export default function App() {
   const handleNavigate = (id: string) => setActiveSection(id)
 
   return (
-    <main className="min-h-screen bg-transparent overflow-hidden">
+    <>
+      <main className="min-h-screen bg-transparent overflow-hidden">
       <Navigation activeSection={activeSection} onNavigate={handleNavigate} />
 
       {/* Inicio: hero + nuestros clientes */}
@@ -71,5 +73,7 @@ export default function App() {
         <Footer />
       </div>
     </main>
+    <WhatsAppButton />
+    </>
   )
 }

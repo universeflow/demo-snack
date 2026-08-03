@@ -12,17 +12,20 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="font-sans antialiased">
-      <ClickSpark
-        sparkColor="#AFFF00"
-        sparkSize={12}
-        sparkRadius={20}
-        sparkCount={8}
-        duration={400}
-        easing="ease-out"
-      >
-        <LenisProvider>{children}</LenisProvider>
-      </ClickSpark>
-    </div>
+    <html lang="es">
+      <body className="font-sans antialiased bg-black text-white">
+        <ClickSpark
+          sparkColor="#AFFF00"
+          sparkSize={12}
+          sparkRadius={20}
+          sparkCount={8}
+          duration={400}
+          easing="ease-out"
+        >
+          <LenisProvider>{children}</LenisProvider>
+        </ClickSpark>
+       
+      </body>
+    </html>
   )
 }
