@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 
 // Same nodes and edges as hero for consistent background pattern
 const NODES = [
@@ -26,7 +26,7 @@ const EDGES: [number, number][] = [
   [36,11],[37,27],[38,29],[37,38],[37,30],[38,29],[39,25],[39,15],
 ]
 
-const fadeUpVariants = {
+const fadeUpVariants: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
     opacity: 1,
