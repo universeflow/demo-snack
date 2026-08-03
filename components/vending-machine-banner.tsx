@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react';
+import Carousel from "./carousel"
+import { getCarruselSnackPro } from '../src/lib/get-carrusel-content';
 
 /* ─── Geometric background nodes ─── */
 const NODES = [
@@ -34,10 +36,45 @@ const SHELF_COLORS = [
   ['#3498db','#27ae60','#f39c12','#E51B24','#3498db','#f39c12','#27ae60'],
 ];
 
+const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
+
+const DEFAULT_SLIDES = [
+  { src: "/images/logo.png", title: "ELIGE", subtitle: "Máquinas inteligentes", objectPosition: "center", accentColor: "var(--accent, #E51B24)" },
+  { src: "/images/slide1.jpg", title: "PRESIONA", subtitle: "Variedad y control", objectPosition: "center", accentColor: "var(--accent, #E51B24)" },
+  { src: "/images/slide2.jpg", title: "DISFRUTA", subtitle: "Productos premium", objectPosition: "center", accentColor: "var(--accent, #E51B24)" }
+];
+
 export default function VendingMachineBanner() {
   const [dispensing, setDispensing] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{ row: number; col: number } | null>(null);
+  const [slides, setSlides] = useState<any[]>(DEFAULT_SLIDES);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /* Cargar datos del carrusel desde Strapi */
+  useEffect(() => {
+    let mounted = true;
+    async function fetchCarousel() {
+      try {
+        const response = await getCarruselSnackPro();
+        if (!mounted || !response || response.length === 0) return;
+
+        const mappedSlides = response.map((item) => ({
+          src: item.url || "/images/slide1.jpg",
+          title: item.titulo_blanco ?? "",
+          subtitle: item.titulo_rojo ?? "",
+          accentColor: "var(--accent, #E51B24)",
+          objectPosition: "center"
+        }));
+
+        setSlides(mappedSlides);
+      } catch (error) {
+        console.error("Error cargando carrusel de Strapi:", error);
+      }
+    }
+
+    fetchCarousel();
+    return () => { mounted = false; };
+  }, []);
 
   /* Auto-dispense every 3.5 s */
   useEffect(() => {
@@ -62,7 +99,8 @@ export default function VendingMachineBanner() {
         width: '100%',
         maxWidth: 1200,
         minHeight: 480,
-        background: 'linear-gradient(135deg, #18181B 0%, #0F0F12 50%, #09090B 100%)',
+        /* background gradient kept for visual depth; overall page bg is gray */
+        background: 'linear-gradient(135deg, var(--panel-bg) 0%, rgba(10,10,10,0.75) 100%)',
         overflow: 'hidden',
         fontFamily: "'Arial Black', 'Arial Bold', Arial, sans-serif",
         borderRadius: 12,
@@ -120,66 +158,16 @@ export default function VendingMachineBanner() {
 
       {/* ── Layout grid ── */}
       <div
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '40px 56px',
-          minHeight: 480,
-          gap: 24,
-        }}
+        className="relative z-10 flex items-center justify-center p-3 sm:p-6 md:p-10 min-h-[360px] sm:min-h-[480px] gap-4 sm:gap-6"
       >
-        {/* LEFT: copy */}
-        <div style={{ flex: '0 0 auto', maxWidth: 440 }}>
-          <div style={{ lineHeight: 1.05, marginBottom: 28 }}>
-            <div style={{ fontSize: 'clamp(44px, 6.5vw, 88px)', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-1.5px' }}>ELIGE</div>
-            <div style={{ fontSize: 'clamp(44px, 6.5vw, 88px)', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-1.5px' }}>PRESIONA</div>
-            <div style={{ fontSize: 'clamp(44px, 6.5vw, 88px)', fontWeight: 900, color: '#FF2A35', letterSpacing: '-1.5px', textShadow: '0 0 40px rgba(255,42,53,0.5)' }}>DISFRUTA</div>
+        {/* CENTERED HERO AREA: carrusel dinámico */}
+        <div className="flex-1 flex items-center justify-center w-full">
+          <div className="w-full max-w-7xl mx-auto px-1 sm:px-4">
+            <Carousel
+              slides={slides}
+              intervalMs={3000}
+            />
           </div>
-
-          <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
-            <div>
-              <div
-                style={{
-                  fontSize: 'clamp(42px, 6vw, 76px)',
-                  fontWeight: 900,
-                  color: '#FF2A35',
-                  lineHeight: 1,
-                  textShadow: '0 0 30px rgba(255,42,53,0.4)',
-                  marginBottom: 6,
-                }}
-              >
-                +50
-              </div>
-              <div style={{ fontSize: 'clamp(13px, 1.6vw, 17px)', fontWeight: 700, color: '#A1A1AA', letterSpacing: 0.5 }}>
-                Máquinas instaladas
-              </div>
-            </div>
-            <div>
-              <div
-                style={{
-                  fontSize: 'clamp(42px, 6vw, 76px)',
-                  fontWeight: 900,
-                  color: '#FF2A35',
-                  lineHeight: 1,
-                  textShadow: '0 0 30px rgba(255,42,53,0.4)',
-                  marginBottom: 6,
-                }}
-              >
-                99%
-              </div>
-              <div style={{ fontSize: 'clamp(13px, 1.6vw, 17px)', fontWeight: 700, color: '#A1A1AA', letterSpacing: 0.5 }}>
-                Disponibilidad
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT: machine */}
-        <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <VendingMachine dispensing={dispensing} selectedItem={selectedItem} />
         </div>
       </div>
 

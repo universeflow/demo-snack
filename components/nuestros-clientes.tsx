@@ -1,12 +1,14 @@
-"use client"
+import { useState, useEffect, useRef } from 'react'
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
+import { parseClientsFromStrapi, Client, DEFAULT_CLIENTS } from './data'
+import Numpad from './numpad'
+import { motion } from "framer-motion"
+import { InformacionClientesPayload, getClientesSnackPro } from '../src/lib/get-clientes-content'
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Grid3x3, X, Pause, Play } from 'lucide-react';
-import { clients, GRID_COLS } from './data';
-import Capsule from './capsule';
-import Numpad from './numpad';
+const AUTOPLAY_MS = 5000
 
-const AUTOPLAY_MS = 5000;
+// URL base de Strapi dinámica
+const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337'
 
 function GeometricPattern({ opacity = 0.06 }: { opacity?: number }) {
   return (
@@ -24,102 +26,173 @@ function GeometricPattern({ opacity = 0.06 }: { opacity?: number }) {
       </defs>
       <rect width="100%" height="100%" fill="url(#geo)" />
     </svg>
-  );
+  )
 }
 
-export default function NuestrosClientes() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [animDir, setAnimDir] = useState<'left' | 'right' | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isAutoplay, setIsAutoplay] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-  const [showGrid, setShowGrid] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
+interface HeroSectionProps {
+  slides?: InformacionClientesPayload[]
+}
 
-  const total = clients.length;
-  const activeClient = clients[activeIndex];
+export default function NuestrosClientes({ slides: strapiSlides }: HeroSectionProps) {
+  const [clients, setClients] = useState<Client[]>(DEFAULT_CLIENTS)
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [isAutoplay, setIsAutoplay] = useState(true)
+  const sectionRef = useRef<HTMLElement>(null)
 
-  const goTo = useCallback((index: number) => {
-    setActiveIndex((prev) => {
-      if (index === prev) return prev;
-      setAnimDir(index > prev ? 'left' : 'right');
-      setIsAnimating(true);
-      return index;
-    });
-  }, []);
+  const totalClients = clients.length
 
-  const prev = useCallback(() => {
-    setActiveIndex((i) => {
-      setAnimDir('right');
-      setIsAnimating(true);
-      return (i - 1 + total) % total;
-    });
-  }, [total]);
+  // Helper para obtener la URL de la imagen
+  const getImageUrl = (client: Client | undefined): string | undefined => {
+    if (!client?.imagenCliente) return undefined
 
-  const next = useCallback(() => {
-    setActiveIndex((i) => {
-      setAnimDir('left');
-      setIsAnimating(true);
-      return (i + 1) % total;
-    });
-  }, [total]);
+    const img = client.imagenCliente
+    let rawUrl: string | undefined
 
-  // Animation lock
-  useEffect(() => {
-    if (isAnimating) {
-      timeoutRef.current = setTimeout(() => setIsAnimating(false), 500);
+    // Si es string directo
+    if (typeof img === 'string') {
+      rawUrl = img
+    } 
+    // Si es objeto con propiedad url
+    else if (img && typeof img === 'object' && 'url' in img) {
+      rawUrl = img.url
     }
-    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
-  }, [isAnimating]);
+
+    if (!rawUrl) return undefined
+
+    // Si ya es URL completa o ruta local de estáticos (/clients/... /images/...)
+    if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://') || rawUrl.startsWith('/clients/') || rawUrl.startsWith('/images/')) {
+      return rawUrl
+    }
+
+    // Agregar prefijo de Strapi
+    return `${STRAPI_BASE_URL}${rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl}`
+  }
+
+  // Cargar clientes de Strapi o usar fallback
+  useEffect(() => {
+    let mounted = true
+
+    async function loadClients() {
+      try {
+        const resp = await getClientesSnackPro()
+        if (!mounted) return
+
+        const parsedClients = parseClientsFromStrapi(resp)
+        
+        if (parsedClients.length > 0) {
+          setClients(parsedClients)
+        } else {
+          setClients(DEFAULT_CLIENTS)
+        }
+      } catch (err) {
+        console.error('Error fetching clients from Strapi:', err)
+        if (mounted) {
+          setClients(DEFAULT_CLIENTS)
+        }
+      }
+    }
+
+    if (strapiSlides && strapiSlides.length > 0) {
+      const parsedClients = parseClientsFromStrapi({ data: strapiSlides })
+      setClients(parsedClients.length > 0 ? parsedClients : DEFAULT_CLIENTS)
+    } else {
+      loadClients()
+    }
+
+    return () => { mounted = false }
+  }, [strapiSlides])
 
   // Autoplay
   useEffect(() => {
-    if (!isAutoplay || isPaused || showGrid) return;
-    const id = setInterval(() => next(), AUTOPLAY_MS);
-    return () => clearInterval(id);
-  }, [isAutoplay, isPaused, showGrid, next]);
+    if (!isAutoplay || totalClients === 0) return
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % totalClients)
+    }, AUTOPLAY_MS)
+    return () => clearInterval(interval)
+  }, [isAutoplay, totalClients])
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (showGrid) {
-        if (e.key === 'Escape') setShowGrid(false);
-        return;
-      }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [prev, next, showGrid]);
+  const goToSlide = (index: number) => {
+    if (totalClients === 0) return
+    setCurrentSlide(index)
+  }
 
-  const leftIndex = (activeIndex - 1 + total) % total;
-  const rightIndex = (activeIndex + 1) % total;
+  const goToPrevious = () => {
+    if (totalClients === 0) return
+    goToSlide(currentSlide === 0 ? totalClients - 1 : currentSlide - 1)
+  }
+
+  const goToNext = () => {
+    if (totalClients === 0) return
+    goToSlide((currentSlide + 1) % totalClients)
+  }
+
+  // Índices para carrusel circular
+  const leftIndex = totalClients > 0 ? (currentSlide - 1 + totalClients) % totalClients : 0
+  const rightIndex = totalClients > 0 ? (currentSlide + 1) % totalClients : 0
+
+  const leftClient = clients[leftIndex]
+  const currentClient = clients[currentSlide]
+  const rightClient = clients[rightIndex]
 
   return (
     <section
       ref={sectionRef}
-      className="w-full h-screen flex items-center justify-center px-4"
-      style={{ background: '#0a0a0a' }}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      id="clientes"
+      className="w-full flex items-center justify-center px-2 sm:px-4 py-8 sm:py-16 bg-transparent"
       aria-roledescription="carrusel"
       aria-label="Nuestros clientes"
     >
-      <div
-        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-2 sm:px-4"
+      <motion.div
+        className="relative w-full rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mx-auto px-1 sm:px-4 border-2 border-red-600/70 max-w-[1600px]"
+        animate={{
+          boxShadow: [
+            "0 0 12px rgba(229,27,36,0.25), inset 0 0 8px rgba(229,27,36,0.15)",
+            "0 0 28px rgba(229,27,36,0.65), inset 0 0 16px rgba(229,27,36,0.35)",
+            "0 0 12px rgba(229,27,36,0.25), inset 0 0 8px rgba(229,27,36,0.15)",
+          ],
+          borderColor: [
+            "rgba(229,27,36,0.45)",
+            "rgba(229,27,36,0.85)",
+            "rgba(229,27,36,0.45)",
+          ]
+        }}
+        transition={{
+          duration: 2.8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
         style={{
           background: 'linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 30%, #111 70%, #1e1e1e 100%)',
-          boxShadow:
-            '0 0 0 1px rgba(200,200,200,0.5), 0 0 0 4px #1a1a1a, 0 0 0 6px rgba(220,220,220,0.3), 0 40px 120px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,255,255,0.08)',
-          border: '2px solid #C0C0C0',
-          padding: '3px sm:4px md:6px',
+          padding: '3px',
           maxWidth: '100%',
-          height: 'auto',
-          minHeight: '400px',
         }}
       >
+        {/* Esquinas LED */}
+        <motion.div
+          className="absolute top-2 left-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.45 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+        <motion.div
+          className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-red-500 z-30"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 1.35 }}
+          style={{ boxShadow: "0 0 8px #E51B24" }}
+        />
+
         <div
           className="relative rounded-2xl overflow-hidden flex flex-col lg:flex-row w-full"
           style={{
@@ -130,241 +203,164 @@ export default function NuestrosClientes() {
         >
           <GeometricPattern opacity={0.05} />
 
-          {/* Corner accents */}
-          <div className="absolute top-0 left-0 w-32 h-32 pointer-events-none overflow-hidden opacity-30">
-            <div style={{ position:'absolute', top:16, left:16, width:80, height:80, border:'1px solid #E51B24', borderRadius:4, transform:'rotate(15deg)' }} />
-          </div>
-          <div className="absolute bottom-0 right-16 w-32 h-32 pointer-events-none overflow-hidden opacity-20">
-            <div style={{ position:'absolute', bottom:16, right:16, width:60, height:60, border:'1px solid #E51B24', borderRadius:4, transform:'rotate(25deg)' }} />
-          </div>
-
-          {/* Main content area */}
-          <div className="flex-1 flex flex-col items-center justify-between py-8 px-4 relative z-10">
-
+          {/* Área principal */}
+          <div className="flex-1 flex flex-col items-center justify-between py-6 sm:py-12 px-3 sm:px-6 relative z-10">
             {/* Header */}
-            <div className="text-center mb-2 w-full">
-              <div className="flex items-center justify-center gap-3 mb-1">
-                <div className="h-px w-12 md:w-20" style={{ background: 'linear-gradient(90deg, transparent, #E51B24)' }} />
+            <div className="text-center mb-4 sm:mb-8 w-full">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 px-2">
+                <div className="h-px w-8 sm:w-16 md:w-28" style={{ background: 'linear-gradient(90deg, transparent, #E51B24)' }} />
                 <h2
-                  className="font-black uppercase tracking-wider text-white"
-                  style={{ fontSize: 'clamp(22px, 4vw, 42px)', letterSpacing: '0.08em', textShadow: '0 0 30px rgba(229,27,36,0.3)' }}
+                  className="font-black uppercase tracking-wider text-white text-center"
+                  style={{ fontSize: 'clamp(20px, 5vw, 56px)', letterSpacing: '0.08em', textShadow: '0 0 30px rgba(229,27,36,0.3)' }}
                 >
                   NUESTROS CLIENTES
                 </h2>
-                <div className="h-px w-12 md:w-20" style={{ background: 'linear-gradient(90deg, #E51B24, transparent)' }} />
+                <div className="h-px w-8 sm:w-16 md:w-28" style={{ background: 'linear-gradient(90deg, #E51B24, transparent)' }} />
               </div>
               <p
-                className="uppercase tracking-widest font-medium"
-                style={{ fontSize: 'clamp(9px, 1.2vw, 13px)', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.22em' }}
+                className="uppercase tracking-widest font-medium text-center"
+                style={{ fontSize: 'clamp(9px, 1.4vw, 16px)', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.18em' }}
               >
                 MÁS QUE LOGOS, HISTORIAS DISPENSADAS
               </p>
             </div>
 
-            {/* Carousel area */}
+            {/* Carrusel */}
             <div
-              className="flex items-center justify-center gap-2 md:gap-6 w-full overflow-hidden py-4"
+              className="flex items-center justify-center gap-2 sm:gap-6 md:gap-10 w-full overflow-hidden py-4 sm:py-8"
               role="region"
-              aria-roledescription="carrusel de testimonios"
               aria-label="Testimonios de clientes"
             >
-              {/* Prev button */}
-              <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                <span
-                  className="font-mono font-bold tracking-widest"
-                  style={{ fontSize: 11, color: '#E51B24', letterSpacing: '0.15em' }}
-                >
-                  {clients[leftIndex].code}
-                </span>
-                <button
-                  onClick={prev}
-                  disabled={isAnimating}
-                  aria-label="Cliente anterior"
-                  className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50"
-                  style={{
-                    width: 44,
-                    height: 44,
-                    background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08)',
-                    color: 'rgba(255,255,255,0.9)',
-                  }}
-                >
-                  <ChevronLeft size={20} />
-                </button>
-              </div>
-
-              {/* Three capsules */}
-              <div
-                className="flex items-end justify-center gap-3 md:gap-6 overflow-hidden"
+              {/* Botón anterior */}
+              <button
+                onClick={goToPrevious}
+                disabled={totalClients === 0}
+                aria-label="Cliente anterior"
+                className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50 flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
                 style={{
-                  transition: 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                  background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  color: 'rgba(255,255,255,0.9)',
                 }}
               >
-                <Capsule
-                  client={clients[leftIndex]}
-                  position="left"
-                  onClick={prev}
-                />
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+              </button>
+
+              {/* 3 Contenedores de Imágenes */}
+              <div className="flex items-center justify-center gap-4 md:gap-8 overflow-hidden">
+                {/* Izquierda (Visible solo en pantallas medianas+) */}
+                <button
+                  onClick={goToPrevious}
+                  aria-label="Ver cliente anterior"
+                  className="hidden md:flex rounded-xl overflow-hidden items-center justify-center transition-all p-3 md:p-4 bg-neutral-900/60 border border-white/10 flex-shrink-0 w-[140px] h-[140px] lg:w-[160px] lg:h-[160px]"
+                >
+                  {getImageUrl(leftClient) ? (
+                    <img
+                      src={getImageUrl(leftClient)}
+                      alt={leftClient?.titulo ?? `Cliente ${leftClient?.id}`}
+                      className="w-full h-full object-contain filter grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-neutral-800/50 rounded-lg" />
+                  )}
+                </button>
+
+                {/* Central (Activa - adaptable a móviles) */}
                 <div
                   role="group"
-                  aria-roledescription="slide"
-                  aria-label={`Cliente ${activeIndex + 1} de ${total}: ${activeClient.name}`}
+                  aria-label={`Cliente ${currentSlide + 1} de ${totalClients}: ${currentClient?.titulo ?? ''}`}
+                  className="rounded-2xl overflow-hidden flex items-center justify-center p-4 sm:p-6 bg-neutral-900 border-2 border-red-600/50 shadow-xl shadow-red-900/30 flex-shrink-0 w-[190px] h-[190px] xs:w-[220px] xs:h-[220px] sm:w-[250px] sm:h-[250px] md:w-[280px] md:h-[280px]"
                 >
-                  <Capsule
-                    client={clients[activeIndex]}
-                    position="center"
-                  />
+                  {getImageUrl(currentClient) ? (
+                    <img
+                      src={getImageUrl(currentClient)}
+                      alt={currentClient?.titulo ?? `Cliente ${currentClient?.id}`}
+                      className="w-full h-full object-contain max-h-full max-w-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-neutral-800 rounded-lg flex items-center justify-center text-white/50 text-xs text-center p-2">
+                      {currentClient?.titulo || 'Cliente'}
+                    </div>
+                  )}
                 </div>
-                <Capsule
-                  client={clients[rightIndex]}
-                  position="right"
-                  onClick={next}
-                />
-              </div>
 
-              {/* Next button */}
-              <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                <span
-                  className="font-mono font-bold tracking-widest"
-                  style={{ fontSize: 11, color: '#E51B24', letterSpacing: '0.15em' }}
-                >
-                  {clients[rightIndex].code}
-                </span>
+                {/* Derecha (Visible solo en pantallas medianas+) */}
                 <button
-                  onClick={next}
-                  disabled={isAnimating}
-                  aria-label="Cliente siguiente"
-                  className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50"
-                  style={{
-                    width: 44,
-                    height: 44,
-                    background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08)',
-                    color: 'rgba(255,255,255,0.9)',
-                  }}
+                  onClick={goToNext}
+                  aria-label="Ver cliente siguiente"
+                  className="hidden md:flex rounded-xl overflow-hidden items-center justify-center transition-all p-3 md:p-4 bg-neutral-900/60 border border-white/10 flex-shrink-0 w-[140px] h-[140px] lg:w-[160px] lg:h-[160px]"
                 >
-                  <ChevronRight size={20} />
+                  {getImageUrl(rightClient) ? (
+                    <img
+                      src={getImageUrl(rightClient)}
+                      alt={rightClient?.titulo ?? `Cliente ${rightClient?.id}`}
+                      className="w-full h-full object-contain filter grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-neutral-800/50 rounded-lg" />
+                  )}
                 </button>
               </div>
+
+              {/* Botón siguiente */}
+              <button
+                onClick={goToNext}
+                disabled={totalClients === 0}
+                aria-label="Cliente siguiente"
+                className="flex items-center justify-center rounded-xl transition-all duration-150 active:scale-95 disabled:opacity-50 flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14"
+                style={{
+                  background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  color: 'rgba(255,255,255,0.9)',
+                }}
+              >
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+              </button>
             </div>
 
-            {/* Fixed testimony panel */}
-            <div
-              className="w-full max-w-lg px-4 py-3 rounded-xl text-center"
-              style={{
-                background: 'rgba(229,27,36,0.06)',
-                border: '1px solid rgba(229,27,36,0.2)',
-              }}
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <p
-                className="italic leading-relaxed"
-                style={{ fontSize: 'clamp(11px, 1.4vw, 14px)', color: 'rgba(255,255,255,0.8)' }}
-              >
-                "{activeClient.testimony}"
-              </p>
-              <p
-                className="mt-1.5 font-bold uppercase tracking-widest"
-                style={{ fontSize: 10, color: '#E51B24', letterSpacing: '0.15em' }}
-              >
-                {activeClient.name} · {activeClient.tagline}
-              </p>
-            </div>
-
-            {/* Progress + counter row */}
-            <div className="flex items-center gap-3 mb-3 mt-3">
-              {/* Autoplay toggle */}
+            {/* Controles de reproducción e indicadores */}
+            <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3 mt-4 sm:mt-6">
               <button
                 onClick={() => setIsAutoplay(!isAutoplay)}
-                aria-label={isAutoplay ? 'Pausar reproducción automática' : 'Activar reproducción automática'}
-                className="flex items-center justify-center rounded-lg transition-all duration-150 active:scale-95 flex-shrink-0"
+                aria-label={isAutoplay ? 'Pausar autoplay' : 'Activar autoplay'}
+                className="flex items-center justify-center rounded-lg transition-all duration-150 active:scale-95 flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9"
                 style={{
-                  width: 28,
-                  height: 28,
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   color: 'rgba(255,255,255,0.6)',
                 }}
               >
-                {isAutoplay ? <Pause size={12} /> : <Play size={12} />}
+                {isAutoplay ? <Pause size={16} /> : <Play size={16} />}
               </button>
 
-              {/* Dots */}
-              <div className="flex items-center gap-1.5 flex-wrap justify-center" role="tablist">
-                {clients.map((c, i) => (
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center" role="tablist">
+                {clients.map((_, index) => (
                   <button
-                    key={i}
-                    onClick={() => goTo(i)}
-                    aria-label={`Ir al cliente ${c.name} (${c.code})`}
-                    aria-selected={i === activeIndex}
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    aria-selected={index === currentSlide}
                     role="tab"
                     className="rounded-full transition-all duration-300"
                     style={{
-                      width: i === activeIndex ? 20 : 6,
-                      height: 6,
-                      background: i === activeIndex ? '#E51B24' : 'rgba(255,255,255,0.2)',
-                      boxShadow: i === activeIndex ? '0 0 8px rgba(229,27,36,0.6)' : 'none',
+                      width: index === currentSlide ? 24 : 8,
+                      height: 8,
+                      background: index === currentSlide ? '#E51B24' : 'rgba(255,255,255,0.2)',
+                      boxShadow: index === currentSlide ? '0 0 8px rgba(229,27,36,0.6)' : 'none',
                     }}
                   />
                 ))}
               </div>
 
-              {/* Counter */}
               <span
-                className="font-mono font-bold flex-shrink-0"
-                style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em' }}
+                className="font-mono font-bold flex-shrink-0 text-xs sm:text-sm"
+                style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em' }}
               >
-                {String(activeIndex + 1).padStart(2, '0')}/{String(total).padStart(2, '0')}
+                {String(currentSlide + 1).padStart(2, '0')}/{String(Math.max(1, totalClients)).padStart(2, '0')}
               </span>
-            </div>
-
-            {/* Bottom status bar + grid button */}
-            <div className="flex items-center gap-3 flex-wrap justify-center">
-              <div
-                className="flex items-center gap-3 px-5 py-2 rounded-xl"
-                style={{
-                  background: 'rgba(229,27,36,0.06)',
-                  border: '1px solid rgba(229,27,36,0.2)',
-                }}
-              >
-                <div
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ background: '#E51B24', boxShadow: '0 0 6px rgba(229,27,36,0.8)' }}
-                />
-                <span
-                  className="font-black uppercase tracking-widest"
-                  style={{ fontSize: 'clamp(9px, 1.2vw, 12px)', color: 'rgba(255,255,255,0.85)', letterSpacing: '0.25em' }}
-                >
-                  LOGOS ENTREGADOS CON ÉXITO
-                </span>
-                <div
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ background: '#E51B24', boxShadow: '0 0 6px rgba(229,27,36,0.8)', animationDelay: '0.5s' }}
-                />
-              </div>
-
-              <button
-                onClick={() => setShowGrid(true)}
-                aria-label="Ver todos los clientes en cuadrícula"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-150 active:scale-95"
-                style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  color: 'rgba(255,255,255,0.7)',
-                }}
-              >
-                <Grid3x3 size={14} />
-                <span className="font-bold uppercase tracking-widest" style={{ fontSize: 10, letterSpacing: '0.15em' }}>
-                  Ver todos
-                </span>
-              </button>
             </div>
           </div>
 
-          {/* Right side numpad panel */}
+          {/* Panel Lateral Numpad */}
           <div
             className="hidden lg:flex flex-col items-center justify-center py-8 px-3 relative z-10 rounded-lg"
             style={{
@@ -373,7 +369,6 @@ export default function NuestrosClientes() {
               boxShadow: '0 0 12px rgba(229,27,36,0.2)',
             }}
           >
-            {/* Coin slot decoration */}
             <div
               className="w-2 h-10 rounded-full mb-6"
               style={{
@@ -383,127 +378,16 @@ export default function NuestrosClientes() {
               }}
             />
 
-            <Numpad activeIndex={activeIndex} total={total} onSelect={goTo} />
-
-            {/* Dispense tray decoration */}
-            <div
-              className="mt-4 w-full max-w-[140px] rounded-lg p-2"
-              style={{
-                background: 'linear-gradient(180deg, #1a1a1a, #0d0d0d)',
-                border: '1px solid #E51B24',
-                boxShadow: 'inset 0 3px 8px rgba(0,0,0,0.9)',
-              }}
-            >
-              <div
-                className="text-center font-mono font-bold tracking-widest"
-                style={{ fontSize: 7, color: 'rgba(255,255,255,0.25)', letterSpacing: '0.15em' }}
-              >
-                RECOGIDA
-              </div>
-              <div
-                className="mx-auto mt-1 rounded-sm"
-                style={{
-                  width: '70%',
-                  height: 6,
-                  background: 'linear-gradient(180deg, rgba(229,27,36,0.3), transparent)',
-                  border: '1px solid #E51B24',
-                  boxShadow: '0 0 8px rgba(229,27,36,0.4)',
-                }}
+            {totalClients > 0 && (
+              <Numpad 
+                activeIndex={currentSlide} 
+                total={totalClients} 
+                onSelect={(i: number) => goToSlide(i)} 
               />
-            </div>
+            )}
           </div>
         </div>
-      </div>
-
-      {/* Grid modal */}
-      {showGrid && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.85)' }}
-          onClick={() => setShowGrid(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Todos los clientes"
-        >
-          <div
-            className="relative w-full max-w-2xl rounded-2xl p-6"
-                  style={{
-                    background: 'linear-gradient(135deg, #2a2a2a, #1a1a1a)',
-                    border: '1px solid #E51B24',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08)',
-                    color: 'rgba(255,255,255,0.9)',
-                  }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3
-                className="font-black uppercase tracking-wider text-white"
-                style={{ fontSize: 18, letterSpacing: '0.08em' }}
-              >
-                Todos los clientes
-              </h3>
-              <button
-                onClick={() => setShowGrid(false)}
-                aria-label="Cerrar"
-                className="flex items-center justify-center rounded-lg transition-all duration-150 active:scale-95"
-                style={{
-                  width: 32,
-                  height: 32,
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'rgba(255,255,255,0.7)',
-                }}
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <div
-              className="grid gap-2"
-              style={{ gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)` }}
-            >
-              {clients.map((c, i) => (
-                <button
-                  key={c.id}
-                  onClick={() => { goTo(i); setShowGrid(false); }}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-150 active:scale-95"
-                  style={{
-                    background: i === activeIndex ? 'rgba(229,27,36,0.15)' : 'rgba(255,255,255,0.03)',
-                    border: i === activeIndex ? '1px solid rgba(229,27,36,0.4)' : '1px solid rgba(255,255,255,0.06)',
-                  }}
-                  aria-label={`Seleccionar ${c.name}, código ${c.code}`}
-                >
-                  <span
-                    className="font-mono font-bold"
-                    style={{ fontSize: 10, color: '#E51B24', letterSpacing: '0.1em' }}
-                  >
-                    {c.code}
-                  </span>
-                  <img
-                    src={c.logoUrl}
-                    alt={c.name}
-                    className="w-10 h-10 rounded-lg object-cover"
-                    style={{ filter: 'grayscale(0.3)' }}
-                  />
-                  <span
-                    className="font-bold text-center"
-                    style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)' }}
-                  >
-                    {c.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            <p
-              className="text-center mt-4 font-mono"
-              style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}
-            >
-              Presiona un cliente para ver su testimonio · ESC para cerrar
-            </p>
-          </div>
-        </div>
-      )}
+      </motion.div>
     </section>
-  );
+  )
 }
