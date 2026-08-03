@@ -39,9 +39,9 @@ const SHELF_COLORS = [
 const STRAPI_BASE_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337';
 
 const DEFAULT_SLIDES = [
-  { src: "/images/slide1.jpg", title: "ELIGE", subtitle: "Máquinas inteligentes", objectPosition: "right center", accentColor: "var(--accent, #E51B24)" },
-  { src: "/images/slide2.jpg", title: "PRESIONA", subtitle: "Variedad y control", objectPosition: "center", accentColor: "var(--accent, #E51B24)" },
-  { src: "/images/slide3.jpg", title: "DISFRUTA", subtitle: "Productos premium", objectPosition: "center", accentColor: "var(--accent, #E51B24)" }
+  { src: "/images/logo.png", title: "ELIGE", subtitle: "Máquinas inteligentes", objectPosition: "center", accentColor: "var(--accent, #E51B24)" },
+  { src: "/images/slide1.jpg", title: "PRESIONA", subtitle: "Variedad y control", objectPosition: "center", accentColor: "var(--accent, #E51B24)" },
+  { src: "/images/slide2.jpg", title: "DISFRUTA", subtitle: "Productos premium", objectPosition: "center", accentColor: "var(--accent, #E51B24)" }
 ];
 
 export default function VendingMachineBanner() {

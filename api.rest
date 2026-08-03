@@ -1,5 +1,5 @@
 
-GET http://localhost:1337/api/carrusels
+GET http://localhost:1337/api/carrusels?populate=imagen_carrusel
 Authorization: Bearer a25708249ca0c64012cce8ad72ef58f2e16cdcd356369d65a3da39674203e032c2e50d1403d2b67ab8f7dbcf6ee9bfef92a3a31fffa0dd2ff1d6bfcc3c03dc69b7979ef91de19ae507c8e473ab419eb7d9d57d5a3a17b06b52fa97192346e50808d2c5378ba9b4586a72af8d8a8f4b0e52d1af861271ec9b888ea5b218eec6a0
 
 
