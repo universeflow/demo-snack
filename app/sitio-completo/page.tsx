@@ -6,6 +6,7 @@ import VendingMachineBanner from "@/components/vending-machine-banner"
 import NuestrosClientes from "@/components/nuestros-clientes"
 import Nosotros from "@/components/nosotros"
 import Servicios from "@/components/servicios"
+import Catalogo from "@/components/catalogo"
 import Contacto from "@/components/contacto"
 import Footer from "@/components/footer"
 
@@ -15,7 +16,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const hash = typeof window !== "undefined" ? window.location.hash.replace("#", "") : ""
-    setActiveSection(hash === "nosotros" || hash === "servicios" || hash === "contacto" ? hash : "inicio")
+    setActiveSection(hash === "nosotros" || hash === "servicios" || hash === "catalogo" || hash === "contacto" ? hash : "inicio")
     const onPop = () => {
       const h = window.location.hash.replace("#", "") || "inicio"
       setActiveSection(h)
@@ -52,6 +53,12 @@ export default function HomePage() {
         {activeSection === "servicios" && (
           <div id="servicios" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
             <Servicios />
+          </div>
+        )}
+
+        {activeSection === "catalogo" && (
+          <div id="catalogo" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
+            <Catalogo />
           </div>
         )}
 

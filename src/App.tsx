@@ -4,6 +4,7 @@ import VendingMachineBanner from "@/components/vending-machine-banner"
 import NuestrosClientes from "@/components/nuestros-clientes"
 import Nosotros from "@/components/nosotros"
 import Servicios from "@/components/servicios"
+import Catalogo from "@/components/catalogo"
 import Contacto from "@/components/contacto"
 import Footer from "@/components/footer"
 import WhatsAppButton from "@/components/whatsapp-button"
@@ -15,7 +16,7 @@ export default function App() {
     // read hash on load to set section
     if (typeof window !== "undefined") {
       const hash = window.location.hash.replace("#", "")
-      if (hash === "nosotros" || hash === "servicios" || hash === "contacto" || hash === "inicio") {
+      if (hash === "nosotros" || hash === "servicios" || hash === "catalogo" || hash === "contacto" || hash === "inicio") {
         setActiveSection(hash || "inicio")
       } else {
         setActiveSection("inicio")
@@ -52,6 +53,13 @@ export default function App() {
       {activeSection === "servicios" && (
         <div id="servicios" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
           <Servicios />
+        </div>
+      )}
+
+      {/* Catálogo */}
+      {activeSection === "catalogo" && (
+        <div id="catalogo" className="max-w-7xl mx-auto px-4 pt-24 pb-8">
+          <Catalogo />
         </div>
       )}
 

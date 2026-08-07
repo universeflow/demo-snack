@@ -3,6 +3,7 @@ import VendingMachineBanner from "@/components/vending-machine-banner"
 import NuestrosClientes from "@/components/nuestros-clientes"
 import { Nosotros } from "@/components/nosotros"
 import { Servicios } from "@/components/servicios"
+import { Catalogo } from "@/components/catalogo"
 import { Contacto } from "@/components/contacto"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
@@ -23,6 +24,9 @@ export default function Home() {
       </div>
       <div id="servicios" className="py-12 scroll-section">
         <Servicios />
+      </div>
+      <div id="catalogo" className="py-12 scroll-section">
+        <Catalogo />
       </div>
       <div id="contacto" className="py-12 scroll-section">
         <Contacto />

@@ -13,6 +13,7 @@ export function Navigation({ activeSection = "inicio", onNavigate }: NavProps) {
     { name: "Inicio", id: "inicio" },
     { name: "Nosotros", id: "nosotros" },
     { name: "Servicios", id: "servicios" },
+    { name: "Catálogo", id: "catalogo" },
     { name: "Contacto", id: "contacto" },
   ]
 
